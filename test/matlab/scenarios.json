@@ -1,9 +1,9 @@
 {
-    "hello": {
+    "install_jupyter_matlab_proxy": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {
-            "hello": {
-                "greeting": "hello"
+            "matlab": {
+                "installJupyterMatlabProxy": true
             }
         }
     }

@@ -1,0 +1,121 @@
+{
+    "name": "MATLAB",
+    "id": "matlab",
+    "version": "0.0.1",
+    "description": "Installs MATLAB, supporting packages and tools.",
+    "documentationURL": "https://github.com/mathworks/devcontainer-features",
+    // TODO: How to have a conditional entrypoint? conditional on whether startInDesktop==true
+    // Dont think features can start programs on container startup.
+    // This entrypoint is meant for the feature itself to be functional, and not an entrypoint to the devcontainer being spawned
+    // "entrypoint": "env MWI_APP_PORT=8888 matlab-proxy-app",
+    "options": {
+        "release": {
+            "type": "string",
+            "proposals": [
+                "r2023b",
+                "r2023a",
+                "r2022b",
+                "r2022a",
+                "r2021b",
+                "r2021a",
+                "r2020b",
+                "r2020a"
+            ],
+            "default": "r2023b",
+            // "default": "latest",
+            "description": "MATLAB Release to install."
+        },
+        "os": {
+            "type": "string",
+            "enum": [
+                "ubuntu22.04",
+                "ubuntu20.04"
+                // ,"ubi9",
+                // "ubi8",
+                // "aws-batch"
+            ],
+            "default": "ubuntu22.04",
+            "description": "OS on which feature is being installed."
+        },
+        "products": {
+            "type": "string",
+            "proposals": [
+                "MATLAB",
+                "MATLAB Simulink Signal_Processing_Toolbox"
+            ],
+            "default": "MATLAB",
+            "description": "Products to install, specified as a list of product names separated by spaces."
+        },
+        "doc": {
+            "type": "boolean",
+            "default": false,
+            "description": "Flag to install documentation and examples. (R2022b and earlier releases)"
+        },
+        "installGpu": {
+            "type": "boolean",
+            "default": false,
+            "description": "Skips installation of GPU libraries when you install Parallel Computing Toolbox. (R2023a and later releases)"
+        },
+        "destination": {
+            "type": "string",
+            "default": "/opt/matlab",
+            "description": "Full path to the installation destination folder."
+        },
+        "installMatlabProxy": {
+            "default": false,
+            "description": "Installs matlab-proxy and its dependencies.",
+            "type": "boolean"
+        },
+        "installJupyterMatlabProxy": {
+            "default": false,
+            "description": "Installs jupyter-matlab-proxy and its dependencies.",
+            "type": "boolean"
+        },
+        "installMatlabEngineForPython": {
+            "default": false,
+            "description": "Installs the MATLAB Engine for Python",
+            "type": "boolean"
+        },
+        "startInDesktop": {
+            "default": false,
+            "description": "Starts matlab-proxy on container start.",
+            "type": "boolean"
+        },
+        "networkLicenseManager": {
+            "type": "string",
+            "proposals": [
+                "port@hostname"
+            ],
+            "default": "",
+            "description": "MATLAB will use the specified Network License Manager."
+        },
+        "skipMatlabInstall": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products."
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "MathWorks.language-matlab"
+            ],
+            "settings": {
+                // Automatically index all MATLAB code files (.m) in the current workspace.
+                "MATLAB.indexWorkspace": true,
+                // The full path to the top-level directory of the MATLAB installation you want to use with this extension. You can determine the full path to your MATLAB installation using the `matlabroot` command in MATLAB. For more information, refer to the [README](https://github.com/mathworks/MATLAB-extension-for-vscode/blob/main/README.md).
+                "MATLAB.installPath": "/usr/local/bin/matlab",
+                // Choose when this extension starts MATLAB in the background. Some functionality will be unavailable without MATLAB running in the background.
+                //  - onStart: Start MATLAB as soon as a MATLAB code file is opened
+                //  - onDemand: Start MATLAB when needed for a given action
+                //  - never: Never start MATLAB
+                "MATLAB.matlabConnectionTiming": "never",
+                // Help improve this extension by sending user experience information to MathWorks. For more information, see the [MathWorks Privacy Policy](https://www.mathworks.com/company/aboutus/policies_statements.html).
+                "MATLAB.telemetry": true
+            }
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
