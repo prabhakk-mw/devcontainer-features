@@ -4,10 +4,6 @@
     "version": "0.0.1",
     "description": "Installs MATLAB, supporting packages and tools.",
     "documentationURL": "https://github.com/mathworks/devcontainer-features",
-    // TODO: How to have a conditional entrypoint? conditional on whether startInDesktop==true
-    // Dont think features can start programs on container startup.
-    // This entrypoint is meant for the feature itself to be functional, and not an entrypoint to the devcontainer being spawned
-    // "entrypoint": "env MWI_APP_PORT=8888 matlab-proxy-app",
     "options": {
         "release": {
             "type": "string",
@@ -22,7 +18,6 @@
                 "r2020a"
             ],
             "default": "r2023b",
-            // "default": "latest",
             "description": "MATLAB Release to install."
         },
         "os": {
@@ -30,9 +25,6 @@
             "enum": [
                 "ubuntu22.04",
                 "ubuntu20.04"
-                // ,"ubi9",
-                // "ubi8",
-                // "aws-batch"
             ],
             "default": "ubuntu22.04",
             "description": "OS on which feature is being installed."
@@ -101,16 +93,9 @@
                 "MathWorks.language-matlab"
             ],
             "settings": {
-                // Automatically index all MATLAB code files (.m) in the current workspace.
                 "MATLAB.indexWorkspace": true,
-                // The full path to the top-level directory of the MATLAB installation you want to use with this extension. You can determine the full path to your MATLAB installation using the `matlabroot` command in MATLAB. For more information, refer to the [README](https://github.com/mathworks/MATLAB-extension-for-vscode/blob/main/README.md).
                 "MATLAB.installPath": "/usr/local/bin/matlab",
-                // Choose when this extension starts MATLAB in the background. Some functionality will be unavailable without MATLAB running in the background.
-                //  - onStart: Start MATLAB as soon as a MATLAB code file is opened
-                //  - onDemand: Start MATLAB when needed for a given action
-                //  - never: Never start MATLAB
                 "MATLAB.matlabConnectionTiming": "never",
-                // Help improve this extension by sending user experience information to MathWorks. For more information, see the [MathWorks Privacy Policy](https://www.mathworks.com/company/aboutus/policies_statements.html).
                 "MATLAB.telemetry": true
             }
         }
