@@ -1,15 +1,13 @@
 
-# Hello, World! (hello)
+# MATLAB (matlab)
 
-A hello world feature
+Installs MATLAB, supporting packages and tools.
 
 ## Example Usage
 
 ```json
 "features": {
-    "ghcr.io/devcontainers/feature-starter/hello:1": {
-        "version": "latest"
-    }
+    "ghcr.io/mw-gh-integration/devcontainer-features/matlab:0": {}
 }
 ```
 
@@ -17,10 +15,27 @@ A hello world feature
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| greeting | Select a pre-made greeting, or enter your own | string | hey |
+| release | MATLAB Release to install. | string | r2023b |
+| os | OS on which feature is being installed. | string | ubuntu22.04 |
+| products | Products to install, specified as a list of product names separated by spaces. | string | MATLAB |
+| doc | Flag to install documentation and examples. (R2022b and earlier releases) | boolean | false |
+| installGpu | Skips installation of GPU libraries when you install Parallel Computing Toolbox. (R2023a and later releases) | boolean | false |
+| destination | Full path to the installation destination folder. | string | /opt/matlab |
+| installMatlabProxy | Installs matlab-proxy and its dependencies. | boolean | false |
+| installJupyterMatlabProxy | Installs jupyter-matlab-proxy and its dependencies. | boolean | false |
+| installMatlabEngineForPython | Installs the MATLAB Engine for Python | boolean | false |
+| startInDesktop | Starts matlab-proxy on container start. | boolean | false |
+| networkLicenseManager | MATLAB will use the specified Network License Manager. | string | - |
+| skipMatlabInstall | Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products. | boolean | false |
+
+## Customizations
+
+### VS Code Extensions
+
+- `MathWorks.language-matlab`
 
 
 
 ---
 
-_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/devcontainers/feature-starter/blob/main/src/hello/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
+_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/mw-gh-integration/devcontainer-features/blob/main/src/matlab/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
