@@ -39,12 +39,12 @@ function install_python_and_xvfb () {
 }
 
 function install_matlab_proxy () {
-    install_python_and_xvfb
+    install_python_and_xvfb && \
     python3 -m pip install --upgrade matlab-proxy
 }
 
 function install_jupyter_matlab_proxy () {
-    install_python_and_xvfb
+    install_python_and_xvfb && \
     python3 -m pip install --upgrade jupyter-matlab-proxy matlab-proxy
 }
 
@@ -58,11 +58,59 @@ function install_matlab_engine_for_python () {
     && python setup.py install || true
 }
 
+function install_matlab_as_container_user () {
+    # Switching to container user
+    su $_CONTAINER_USER
+    pushd $_CONTAINER_USER_HOME
+    
+    # Installing MATLAB as containerUser allows for support packages to be installed at the correct location.
+    wget -q https://www.mathworks.com/mpm/glnxa64/mpm \
+    && chmod +x mpm \
+    && sudo HOME=${_CONTAINER_USER_HOME} ./mpm install \
+    --release=${MATLAB_RELEASE} \
+    --destination=${MATLAB_INSTALL_LOCATION} \
+    --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS} \
+    && sudo rm -f mpm /tmp/mathworks_root.log \
+    && sudo ln -s ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
+}
+
 ### Helper Functions End ###
 ### Script Section Begin ###
 
 MATLAB_FEATURE_INSTALL_TMPDIR=/tmp/matlab-feature-install
 mkdir -p $MATLAB_FEATURE_INSTALL_TMPDIR && pushd $MATLAB_FEATURE_INSTALL_TMPDIR
+
+
+# Install matlab-proxy if requested
+if [ "${INSTALLMATLABPROXY}" == "true" ]; then
+    echo "Installing matlab-proxy"
+    install_matlab_proxy
+fi
+
+# Install jupyter-matlab-proxy if requested
+if [ "${INSTALLJUPYTERMATLABPROXY}" == "true" ]; then
+    echo "Installing jupyter-matlab-proxy"
+    install_jupyter_matlab_proxy
+fi
+
+# Install MATLAB Engine for Python if requested
+if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
+    echo "Installing matlabengine"
+    install_matlab_engine_for_python
+fi
+
+if [ "${STARTINDESKTOP}" == "true" ]; then
+    # Can a feature effect the entrypoint?
+    echo "User wants to start matlab-proxy-app by default!"
+    # Leave a marker file that can be checked by the postStartCommand
+    # matlab-proxy will be started by the postStartCommand.
+    install_matlab_proxy && \
+    touch /tmp/.startmatlabdesktop
+fi
+
+if [ ! -z "${NETWORKLICENSEMANAGER}" -a "${NETWORKLICENSEMANAGER}" != " " ]; then
+    updaterc "export MLM_LICENSE_FILE=${NETWORKLICENSEMANAGER}"
+fi
 
 if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     # Install dependencies for OS
@@ -98,7 +146,7 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         fi
     fi
     
-    if [ ! -z "$_CONTAINER_USER" -a "$_CONTAINER_USER" != " " ]; then
+    if [ ! -z "$_CONTAINER_USER" -a "$_CONTAINER_USER" != " " ] && [ "$_CONTAINER_USER" != "root" ]; then
         echo "Container user is defined as : '$_CONTAINER_USER'"
         echo "Container user's effective home dir: '$_CONTAINER_USER_HOME'"
         
@@ -135,35 +183,6 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         && ln -fs ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
     fi
     
-fi
-
-# Install matlab-proxy if requested
-if [ "${INSTALLMATLABPROXY}" == "true" ]; then
-    install_matlab_proxy
-fi
-
-# Install jupyter-matlab-proxy if requested
-if [ "${INSTALLJUPYTERMATLABPROXY}" == "true" ]; then
-    install_jupyter_matlab_proxy
-fi
-
-# Install MATLAB Engine for Python if requested
-if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
-    install_matlab_engine_for_python
-fi
-
-if [ "${STARTINDESKTOP}" == "true" ]; then
-    # Can a feature effect the entrypoint?
-    echo "User wants to start matlab-proxy-app by default!"
-    install_matlab_proxy
-    
-    # Leave a marker file that can be checked by the postStartCommand
-    # matlab-proxy will be started by the postStartCommand.
-    touch /tmp/.startmatlabdesktop
-fi
-
-if [ ! -z "${NETWORKLICENSEMANAGER}" -a "${NETWORKLICENSEMANAGER}" != " " ]; then
-    updaterc "export MLM_LICENSE_FILE=${NETWORKLICENSEMANAGER}"
 fi
 
 # The 'install.sh' entrypoint script is always executed as the root user.
