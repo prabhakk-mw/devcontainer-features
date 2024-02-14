@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # This test file will be executed against one of the scenarios devcontainer.json test that
-# includes the 'matlab' feature with "installJupyterMatlabProxy": "true" option.
+# includes the 'matlab' feature with
+# "startInDesktop": true,
+# "networkLicenseManager": "123@abc.com"
 
 # This test can be run with the following command:
 #
@@ -23,12 +25,13 @@ source dev-container-features-test-lib
 
 check "python3 is installed" python3 --version
 
-check "jupyter-matlab-proxy has been installed"  bash -c "python3 -m pip list | grep jupyter-matlab-proxy"
-
 check "matlab-proxy has been installed"  bash -c "python3 -m pip list | grep matlab-proxy"
 
 check "matlab-proxy-app is callable" bash -c "matlab-proxy-app -h"
 
+check "is startInDesktop marker file present" bash -c "ls /tmp/.startmatlabdesktop"
+
+check "NLM information is saved in bashrc " bash -c "echo $MLM_LICENSE_FILE | grep 123@abc.com "
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
 reportResults

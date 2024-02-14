@@ -2,9 +2,6 @@
 #-------------------------------------------------------------------------------------------------------------
 # Copyright 2024 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
-#
-# Docs:
-# Maintainer: The Mathworks, Inc.
 
 ### Variable Declaration Begin ###
 
@@ -31,7 +28,7 @@ function updaterc() {
     fi
 }
 
-function install_matlab_proxy () {
+function install_python_and_xvfb () {
     export DEBIAN_FRONTEND=noninteractive && apt-get update \
     && apt-get install --no-install-recommends -y \
     python3 \
@@ -39,19 +36,15 @@ function install_matlab_proxy () {
     xvfb \
     && apt-get clean \
     && apt-get -y autoremove && rm -rf /var/lib/apt/lists/*
-    
-    # TODO: verify that matlab-proxy-app is installed into /usr/local/bin
+}
+
+function install_matlab_proxy () {
+    install_python_and_xvfb
     python3 -m pip install --upgrade matlab-proxy
 }
 
 function install_jupyter_matlab_proxy () {
-    export DEBIAN_FRONTEND=noninteractive && apt-get update \
-    && apt-get install --no-install-recommends -y \
-    python3 \
-    python3-pip \
-    xvfb \
-    && apt-get clean \
-    && apt-get -y autoremove && rm -rf /var/lib/apt/lists/*
+    install_python_and_xvfb
     python3 -m pip install --upgrade jupyter-matlab-proxy matlab-proxy
 }
 
@@ -64,8 +57,10 @@ function install_matlab_engine_for_python () {
     && cd ${MATLAB_INSTALL_LOCATION}/extern/engines/python \
     && python setup.py install || true
 }
+
 ### Helper Functions End ###
 ### Script Section Begin ###
+
 MATLAB_FEATURE_INSTALL_TMPDIR=/tmp/matlab-feature-install
 mkdir -p $MATLAB_FEATURE_INSTALL_TMPDIR && pushd $MATLAB_FEATURE_INSTALL_TMPDIR
 
@@ -87,23 +82,59 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     
     ADDITIONAL_MPM_FLAGS=" "
     if [ "${DOC}" == "true" ]; then
-        ADDITIONAL_MPM_FLAGS=${ADDITIONAL_MPM_FLAGS} --doc
+        ADDITIONAL_MPM_FLAGS="${ADDITIONAL_MPM_FLAGS} --doc "
     fi
     
     if [ "${INSTALLGPU}" == "false" ]; then
-        ADDITIONAL_MPM_FLAGS=${ADDITIONAL_MPM_FLAGS} --no-gpu
+        RELEASES_THAT_SUPPORT_NOGPU=("r2023b" "r2023a")
+        # The value variable is assigned a regex that matches the exact value
+        value="\<${MATLAB_RELEASE}\>"
+        if [[ ${RELEASES_THAT_SUPPORT_NOGPU[@]} =~ $value ]]
+        then
+            echo "'$MATLAB_RELEASE' supports NOGPU flag..."
+            ADDITIONAL_MPM_FLAGS="${ADDITIONAL_MPM_FLAGS} --no-gpu "
+        else
+            echo "'$MATLAB_RELEASE' does not support NOGPU flag, skipping..."
+        fi
     fi
     
-    # Not dealing with support packages at the moment, they will be installed into the root folder
-    # and possibly be inaccessible to the end user
-    wget -q https://www.mathworks.com/mpm/glnxa64/mpm && \
-    chmod +x mpm && \
-    ./mpm install \
-    --release=${MATLAB_RELEASE} \
-    --destination=${MATLAB_INSTALL_LOCATION} \
-    --products ${MATLAB_PRODUCT_LIST} && \
-    rm -f mpm /tmp/mathworks_root.log && \
-    ln -fs ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
+    if [ ! -z "$_CONTAINER_USER" -a "$_CONTAINER_USER" != " " ]; then
+        echo "Container user is defined as : '$_CONTAINER_USER'"
+        echo "Container user's effective home dir: '$_CONTAINER_USER_HOME'"
+        
+        echo "Proceeding to install matlab as '$_CONTAINER_USER'..."
+        
+        # Switching to container user
+        su $_CONTAINER_USER
+        pushd $_CONTAINER_USER_HOME
+        
+        # Installing MATLAB as containerUser allows for support packages to be installed at the correct location.
+        wget -q https://www.mathworks.com/mpm/glnxa64/mpm \
+        && chmod +x mpm \
+        && sudo HOME=${_CONTAINER_USER_HOME} ./mpm install \
+        --release=${MATLAB_RELEASE} \
+        --destination=${MATLAB_INSTALL_LOCATION} \
+        --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS} \
+        && sudo rm -f mpm /tmp/mathworks_root.log \
+        && sudo ln -s ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
+        
+        ## Resetting to original context
+        # exit will reset the user to root and call popd
+        exit
+        # popd
+        # sudo su
+    else
+        # Installs as root, because feature scripts run as root user.
+        wget -q https://www.mathworks.com/mpm/glnxa64/mpm \
+        && chmod +x mpm \
+        && ./mpm install \
+        --release=${MATLAB_RELEASE} \
+        --destination=${MATLAB_INSTALL_LOCATION} \
+        --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS}\
+        && rm -f mpm /tmp/mathworks_root.log \
+        && ln -fs ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
+    fi
+    
 fi
 
 # Install matlab-proxy if requested
@@ -126,7 +157,9 @@ if [ "${STARTINDESKTOP}" == "true" ]; then
     echo "User wants to start matlab-proxy-app by default!"
     install_matlab_proxy
     
-    echo "Dont know how to start a process from a feature"
+    # Leave a marker file that can be checked by the postStartCommand
+    # matlab-proxy will be started by the postStartCommand.
+    touch /tmp/.startmatlabdesktop
 fi
 
 if [ ! -z "${NETWORKLICENSEMANAGER}" -a "${NETWORKLICENSEMANAGER}" != " " ]; then

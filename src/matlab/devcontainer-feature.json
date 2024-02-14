@@ -55,12 +55,12 @@
         },
         "installMatlabProxy": {
             "default": false,
-            "description": "Installs matlab-proxy and its dependencies.",
+            "description": "Installs matlab-proxy and its dependencies. (R2020b and later releases)",
             "type": "boolean"
         },
         "installJupyterMatlabProxy": {
             "default": false,
-            "description": "Installs jupyter-matlab-proxy and its dependencies.",
+            "description": "Installs jupyter-matlab-proxy and its dependencies. (R2020b and later releases)",
             "type": "boolean"
         },
         "installMatlabEngineForPython": {
@@ -87,6 +87,7 @@
             "description": "Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products."
         }
     },
+    "postStartCommand": "( ls /tmp/.startmatlabdesktop >> /dev/null 2>&1 && env MWI_APP_PORT=8888 matlab-proxy-app 2>/dev/null ) || echo 'Will not start matlab-proxy-app...'",
     "customizations": {
         "vscode": {
             "extensions": [

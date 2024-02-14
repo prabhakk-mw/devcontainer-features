@@ -6,5 +6,26 @@
                 "installJupyterMatlabProxy": true
             }
         }
+    },
+    "install_support_packages_as_container_user": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "matlab": {
+                "release": "r2022a",
+                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+                "destination": "/opt/matlab/r2022a"
+            }
+        },
+        "containerUser": "vscode"
+    },
+    "start_in_matlab_proxy_desktop": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "matlab": {
+                "startInDesktop": true,
+                "networkLicenseManager": "123@abc.com"
+            }
+        },
+        "containerUser": "vscode"
     }
 }
