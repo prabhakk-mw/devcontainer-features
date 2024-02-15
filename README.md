@@ -1,4 +1,4 @@
-# MATLAB Development Container Features
+# MATLAB® Development Container Features
 
 ## Overview
 
