@@ -69,9 +69,14 @@
             "type": "boolean"
         },
         "startInDesktop": {
-            "default": false,
+            "default": "false",
             "description": "Starts matlab-proxy on container start.",
-            "type": "boolean"
+            "type": "string",
+            "enum": [
+                "true",
+                "false",
+                "test"
+            ]
         },
         "networkLicenseManager": {
             "type": "string",

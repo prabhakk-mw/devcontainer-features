@@ -10,8 +10,8 @@
 #                   --remote-user root \
 #                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu \
 #                   `pwd`
-#
-
+# OR :
+# devcontainer features test -p `pwd` -f matlab --filter install_jupyter_matlab_proxy
 set -e
 
 # Optional: Import test library bundled with the devcontainer CLI

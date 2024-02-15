@@ -13,9 +13,8 @@
 #                   --remote-user root \
 #                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu \
 #                   `pwd`
-#
-
-# devcontainer features test --features matlab --filter install_support_packages_as_container_user --remote-user root --base-image mcr.microsoft.com/devcontainers/base:ubuntu `pwd`
+# OR:
+# devcontainer features test -p `pwd` -f matlab --filter install_support_packages_as_container_user
 set -e
 
 # Optional: Import test library bundled with the devcontainer CLI

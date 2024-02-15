@@ -1,12 +1,4 @@
 {
-    "install_jupyter_matlab_proxy": {
-        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-        "features": {
-            "matlab": {
-                "installJupyterMatlabProxy": true
-            }
-        }
-    },
     "install_support_packages_as_container_user": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {
@@ -18,12 +10,22 @@
         },
         "containerUser": "vscode"
     },
+    "install_jupyter_matlab_proxy": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "matlab": {
+                "installJupyterMatlabProxy": true,
+                "skipMatlabInstall": true
+            }
+        }
+    },
     "start_in_matlab_proxy_desktop": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {
             "matlab": {
-                "startInDesktop": true,
-                "networkLicenseManager": "123@abc.com"
+                "startInDesktop": "test",
+                "networkLicenseManager": "123@abc.com",
+                "skipMatlabInstall": true
             }
         },
         "containerUser": "vscode"

@@ -17,6 +17,19 @@
 # Thus, the value of all options will fall back to the default value in
 # the Feature's 'devcontainer-feature.json'.
 # For the 'matlab' feature, that means the default version installed in r2023b
+# These are the default values that are passed into the feature:
+#     RELEASE="r2023b"
+#     OS="ubuntu22.04"
+#     PRODUCTS="MATLAB"
+#     DOC="false"
+#     INSTALLGPU="false"
+#     DESTINATION="/opt/matlab"
+#     INSTALLMATLABPROXY="false"
+#     INSTALLJUPYTERMATLABPROXY="false"
+#     INSTALLMATLABENGINEFORPYTHON="false"
+#     STARTINDESKTOP="false"
+#     NETWORKLICENSEMANAGER=""
+#     SKIPMATLABINSTALL="false"
 #
 # These scripts are run as 'root' by default. Although that can be changed
 # with the '--remote-user' flag.

@@ -99,13 +99,22 @@ if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
     install_matlab_engine_for_python
 fi
 
-if [ "${STARTINDESKTOP}" == "true" ]; then
+if [ "${STARTINDESKTOP}" == "true" ] || [ "${STARTINDESKTOP}" == "test" ]; then
     # Can a feature effect the entrypoint?
     echo "User wants to start matlab-proxy-app by default!"
     # Leave a marker file that can be checked by the postStartCommand
     # matlab-proxy will be started by the postStartCommand.
-    install_matlab_proxy && \
-    touch /tmp/.startmatlabdesktop
+    if [ "${STARTINDESKTOP}" == "true" ]; then
+        install_matlab_proxy && \
+        touch /tmp/.startmatlabdesktop && \
+        rm -f /tmp/.teststartmatlabdesktop
+    else
+        # This file is used during testing and does not actually effect the postStartCommand that is looking for
+        # the startmatlabdesktop file!
+        install_matlab_proxy && \
+        touch /tmp/.teststartmatlabdesktop && \
+        rm -f /tmp/.startmatlabdesktop
+    fi
 fi
 
 if [ ! -z "${NETWORKLICENSEMANAGER}" -a "${NETWORKLICENSEMANAGER}" != " " ]; then
