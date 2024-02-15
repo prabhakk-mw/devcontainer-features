@@ -26,7 +26,7 @@ Installs MATLAB, supporting packages and tools.
 | installMatlabEngineForPython | Installs the MATLAB Engine for Python | boolean | false |
 | startInDesktop | Starts matlab-proxy on container start. | boolean | false |
 | networkLicenseManager | MATLAB will use the specified Network License Manager. | string | - |
-| skipMatlabInstall | Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products. | boolean | false |
+| skipMATLABInstall | Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products. | boolean | false |
 
 ## Customizations
 

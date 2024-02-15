@@ -86,7 +86,7 @@
             "default": "",
             "description": "MATLAB will use the specified Network License Manager."
         },
-        "skipMatlabInstall": {
+        "skipMATLABInstall": {
             "type": "boolean",
             "default": false,
             "description": "Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products."
