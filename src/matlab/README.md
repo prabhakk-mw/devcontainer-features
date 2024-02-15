@@ -21,10 +21,10 @@ Installs MATLAB, supporting packages and tools.
 | doc | Flag to install documentation and examples. (R2022b and earlier releases) | boolean | false |
 | installGpu | Skips installation of GPU libraries when you install Parallel Computing Toolbox. (R2023a and later releases) | boolean | false |
 | destination | Full path to the installation destination folder. | string | /opt/matlab |
-| installMatlabProxy | Installs matlab-proxy and its dependencies. | boolean | false |
-| installJupyterMatlabProxy | Installs jupyter-matlab-proxy and its dependencies. | boolean | false |
+| installMatlabProxy | Installs matlab-proxy and its dependencies. (R2020b and later releases) | boolean | false |
+| installJupyterMatlabProxy | Installs jupyter-matlab-proxy and its dependencies. (R2020b and later releases) | boolean | false |
 | installMatlabEngineForPython | Installs the MATLAB Engine for Python | boolean | false |
-| startInDesktop | Starts matlab-proxy on container start. | boolean | false |
+| startInDesktop | Starts matlab-proxy on container start. | string | false |
 | networkLicenseManager | MATLAB will use the specified Network License Manager. | string | - |
 | skipMATLABInstall | Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products. | boolean | false |
 
