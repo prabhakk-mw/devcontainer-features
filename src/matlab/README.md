@@ -20,7 +20,7 @@ Installs MATLAB, supporting packages and tools.
 | products | Products to install, specified as a list of product names separated by spaces. | string | MATLAB |
 | doc | Flag to install documentation and examples. (R2022b and earlier releases) | boolean | false |
 | installGpu | Skips installation of GPU libraries when you install Parallel Computing Toolbox. (R2023a and later releases) | boolean | false |
-| destination | Full path to the installation destination folder. | string | /opt/matlab |
+| destination | Full path to the installation destination folder. | string | /opt/matlab/$RELEASE |
 | installMatlabProxy | Installs matlab-proxy and its dependencies. (R2020b and later releases) | boolean | false |
 | installJupyterMatlabProxy | Installs jupyter-matlab-proxy and its dependencies. (R2020b and later releases) | boolean | false |
 | installMatlabEngineForPython | Installs the MATLAB Engine for Python | boolean | false |
