@@ -187,7 +187,7 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         --destination=${MATLAB_INSTALL_LOCATION} \
         --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS} &&
         sudo rm -f mpm /tmp/mathworks_root.log &&
-        sudo ln -s ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
+        sudo ln -fs ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
         
         ## Resetting to original context
         # exit will reset the user to root and call popd
