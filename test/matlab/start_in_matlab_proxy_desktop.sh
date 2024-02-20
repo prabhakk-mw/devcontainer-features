@@ -30,7 +30,7 @@ check "matlab-proxy has been installed"  bash -c "python3 -m pip list | grep mat
 
 check "matlab-proxy-app is callable" bash -c "matlab-proxy-app -h"
 
-check "is startInDesktop marker file present" bash -c "ls /tmp/.teststartmatlabdesktop"
+check "is startInDesktop marker file present" bash -c "ls ~/.teststartmatlabdesktop"
 
 check "NLM information is saved in bashrc " bash -c "echo $MLM_LICENSE_FILE | grep 123@abc.com "
 # Report results

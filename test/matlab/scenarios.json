@@ -4,8 +4,7 @@
         "features": {
             "matlab": {
                 "release": "r2022a",
-                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
-                "destination": "/opt/matlab/r2022a"
+                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors"
             }
         },
         "containerUser": "vscode"

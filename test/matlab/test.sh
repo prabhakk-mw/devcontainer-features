@@ -53,7 +53,7 @@ source dev-container-features-test-lib
 # Feature-specific tests
 # The 'check' command comes from the dev-container-features-test-lib. Syntax is...
 # check <LABEL> <cmd> [args...]
-check "r2023b is installed" bash -c "cat /opt/matlab/VersionInfo.xml | grep '<release>R2023b</release>'"
+check "r2023b is installed" bash -c "cat /opt/matlab/r2023b/VersionInfo.xml | grep '<release>R2023b</release>'"
 
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.

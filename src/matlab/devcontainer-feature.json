@@ -1,7 +1,7 @@
 {
     "name": "MATLAB",
     "id": "matlab",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Installs MATLAB, supporting packages and tools.",
     "documentationURL": "https://github.com/mathworks/devcontainer-features",
     "options": {
@@ -15,7 +15,8 @@
                 "r2021b",
                 "r2021a",
                 "r2020b",
-                "r2020a"
+                "r2020a",
+                "r2019a"
             ],
             "default": "r2023b",
             "description": "MATLAB Release to install."
@@ -50,7 +51,7 @@
         },
         "destination": {
             "type": "string",
-            "default": "/opt/matlab",
+            "default": "/opt/matlab/$RELEASE",
             "description": "Full path to the installation destination folder."
         },
         "installMatlabProxy": {
@@ -92,7 +93,7 @@
             "description": "Set to true if you dont want to install MATLAB. Useful if you only want to install the proxy products."
         }
     },
-    "postStartCommand": "( ls /tmp/.startmatlabdesktop >> /dev/null 2>&1 && env MWI_APP_PORT=8888 matlab-proxy-app 2>/dev/null ) || echo 'Will not start matlab-proxy-app...'",
+    "postStartCommand": "( ls ~/.startmatlabdesktop >> /dev/null 2>&1 && env MWI_APP_PORT=8888 matlab-proxy-app 2>/dev/null ) || echo 'Will not start matlab-proxy-app...'",
     "customizations": {
         "vscode": {
             "extensions": [

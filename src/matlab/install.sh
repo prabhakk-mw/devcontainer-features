@@ -23,41 +23,41 @@ OS="${OS:-"ubuntu22.04"}"
 function updaterc() {
     echo "Updating /etc/bash.bashrc and /etc/zsh/zshrc..."
     if [[ "$(cat /etc/bash.bashrc)" != *"$1"* ]]; then
-        echo -e "$1" >> /etc/bash.bashrc
+        echo -e "$1" >>/etc/bash.bashrc
     fi
     if [ -f "/etc/zsh/zshrc" ] && [[ "$(cat /etc/zsh/zshrc)" != *"$1"* ]]; then
-        echo -e "$1" >> /etc/zsh/zshrc
+        echo -e "$1" >>/etc/zsh/zshrc
     fi
 }
 
-function install_python_and_xvfb () {
-    export DEBIAN_FRONTEND=noninteractive && apt-get update \
-    && apt-get install --no-install-recommends -y \
+function install_python_and_xvfb() {
+    export DEBIAN_FRONTEND=noninteractive && apt-get update &&
+    apt-get install --no-install-recommends -y \
     python3 \
     python3-pip \
-    xvfb \
-    && apt-get clean \
-    && apt-get -y autoremove && rm -rf /var/lib/apt/lists/*
+    xvfb &&
+    apt-get clean &&
+    apt-get -y autoremove && rm -rf /var/lib/apt/lists/*
 }
 
-function install_matlab_proxy () {
-    install_python_and_xvfb && \
+function install_matlab_proxy() {
+    install_python_and_xvfb &&
     python3 -m pip install --upgrade matlab-proxy
 }
 
-function install_jupyter_matlab_proxy () {
-    install_python_and_xvfb && \
+function install_jupyter_matlab_proxy() {
+    install_python_and_xvfb &&
     python3 -m pip install --upgrade jupyter-matlab-proxy matlab-proxy
 }
 
-function install_matlab_engine_for_python () {
-    export DEBIAN_FRONTEND=noninteractive && apt-get update \
-    && apt-get install --no-install-recommends -y  python3-distutils \
-    && apt-get clean \
-    && apt-get -y autoremove \
-    && rm -rf /var/lib/apt/lists/* \
-    && cd ${MATLAB_INSTALL_LOCATION}/extern/engines/python \
-    && python setup.py install || true
+function install_matlab_engine_for_python() {
+    export DEBIAN_FRONTEND=noninteractive && apt-get update &&
+    apt-get install --no-install-recommends -y python3-distutils &&
+    apt-get clean &&
+    apt-get -y autoremove &&
+    rm -rf /var/lib/apt/lists/* &&
+    cd ${MATLAB_INSTALL_LOCATION}/extern/engines/python &&
+    python setup.py install || true
 }
 
 ### Helper Functions End ###
@@ -86,25 +86,31 @@ if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
     install_matlab_engine_for_python
 fi
 
-# Sets marker files in /tmp that are picked up by the postStartCommand
-# matlab-proxy will be started by the postStartCommand.
-# Current postStartCommand:
-# "( ls /tmp/.startmatlabdesktop >> /dev/null 2>&1 && env MWI_APP_PORT=8888 matlab-proxy-app 2>/dev/null ) || echo 'Will not start matlab-proxy-app...'",
 if [ "${STARTINDESKTOP}" == "true" ] || [ "${STARTINDESKTOP}" == "test" ]; then
-    # Can a feature effect the entrypoint?
-    echo "User wants to start matlab-proxy-app by default!"
+    echo "User wants to start in MATLAB Desktop."
     # Leave a marker file that can be checked by the postStartCommand
-    if [ "${STARTINDESKTOP}" == "true" ]; then
-        install_matlab_proxy && \
-        touch /tmp/.startmatlabdesktop && \
-        rm -f /tmp/.teststartmatlabdesktop
+    # matlab-proxy will be started by the postStartCommand.
+    # Current postStartCommand:
+    # "( ls ~/.startmatlabdesktop >> /dev/null 2>&1 && env MWI_APP_PORT=8888 matlab-proxy-app 2>/dev/null ) || echo 'Will not start matlab-proxy-app...'",
+    # the /tmp directory is not available on codespaces, using _CONTAINER_USER_HOME instead.
+    if [ ! -z "${_CONTAINER_USER_HOME}" -a "${_CONTAINER_USER_HOME}" != " " ]; then
+        # This feature is only available when _CONTAINER_USER_HOME is known.
+        if [ "${STARTINDESKTOP}" == "true" ]; then
+            install_matlab_proxy &&
+            touch ${_CONTAINER_USER_HOME}/.startmatlabdesktop &&
+            chmod a+rw ${_CONTAINER_USER_HOME}/.startmatlabdesktop &&
+            rm -f ${_CONTAINER_USER_HOME}/.teststartmatlabdesktop
+        else
+            # This file is used during testing and does not actually effect the postStartCommand that is looking for
+            # the startmatlabdesktop file!
+            # Without this, Tests would hang indefinitely waiting for the postStartCommand
+            install_matlab_proxy &&
+            touch ${_CONTAINER_USER_HOME}/.teststartmatlabdesktop &&
+            chmod a+rw ${_CONTAINER_USER_HOME}/.teststartmatlabdesktop &&
+            rm -f ${_CONTAINER_USER_HOME}/.startmatlabdesktop
+        fi
     else
-        # This file is used during testing and does not actually effect the postStartCommand that is looking for
-        # the startmatlabdesktop file!
-        # Without this, Tests would hang indefinitely waiting for the postStartCommand
-        install_matlab_proxy && \
-        touch /tmp/.teststartmatlabdesktop && \
-        rm -f /tmp/.startmatlabdesktop
+        echo "Cannot start in desktop as the _CONTAINER_USER_HOME is undefined or empty. Value:'${_CONTAINER_USER_HOME}'"
     fi
 fi
 
@@ -123,17 +129,17 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     ## 1. Install OS Dependencies required by MATLAB
     MATLAB_DEPS_REQUIREMENTS_FILE="https://raw.githubusercontent.com/mathworks-ref-arch/container-images/main/matlab-deps/${MATLAB_RELEASE}/${OS}/base-dependencies.txt"
     MATLAB_DEPS_REQUIREMENTS_FILE_NAME="/tmp/matlab-deps-${MATLAB_RELEASE}-base-dependencies.txt"
-    export DEBIAN_FRONTEND=noninteractive && apt-get update \
-    && apt-get install --no-install-recommends -y \
+    export DEBIAN_FRONTEND=noninteractive && apt-get update &&
+    apt-get install --no-install-recommends -y \
     wget \
     unzip \
     ca-certificates \
-    git \
-    && wget ${MATLAB_DEPS_REQUIREMENTS_FILE} -O ${MATLAB_DEPS_REQUIREMENTS_FILE_NAME} \
-    && xargs -a ${MATLAB_DEPS_REQUIREMENTS_FILE_NAME} -r apt-get install --no-install-recommends -y \
-    && apt-get clean \
-    && apt-get -y autoremove \
-    && rm -rf /var/lib/apt/lists/* ${MATLAB_DEPS_REQUIREMENTS_FILE_NAME}
+    git &&
+    wget ${MATLAB_DEPS_REQUIREMENTS_FILE} -O ${MATLAB_DEPS_REQUIREMENTS_FILE_NAME} &&
+    xargs -a ${MATLAB_DEPS_REQUIREMENTS_FILE_NAME} -r apt-get install --no-install-recommends -y &&
+    apt-get clean &&
+    apt-get -y autoremove &&
+    rm -rf /var/lib/apt/lists/* ${MATLAB_DEPS_REQUIREMENTS_FILE_NAME}
     
     ## 2. Setup MPM flags based on options
     ADDITIONAL_MPM_FLAGS=" "
@@ -148,14 +154,18 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         RELEASES_THAT_SUPPORT_NOGPU=("r2023b" "r2023a")
         # The value variable is assigned a regex that matches the exact value
         value="\<${MATLAB_RELEASE}\>"
-        if [[ ${RELEASES_THAT_SUPPORT_NOGPU[@]} =~ $value ]]
-        then
+        if [[ ${RELEASES_THAT_SUPPORT_NOGPU[@]} =~ $value ]]; then
             echo "'$MATLAB_RELEASE' supports NOGPU flag..."
             ADDITIONAL_MPM_FLAGS="${ADDITIONAL_MPM_FLAGS} --no-gpu "
         else
             echo "'$MATLAB_RELEASE' does not support NOGPU flag, skipping..."
         fi
     fi
+    
+    echo "Container user is defined as : '$_CONTAINER_USER'"
+    echo "Container user's effective home dir: '$_CONTAINER_USER_HOME'"
+    echo "Container user is defined as : '$_REMOTE_USER'"
+    echo "Container user's effective home dir: '$_REMOTE_USER_HOME'"
     
     ## 3. Install MATLAB using MPM
     if [ ! -z "$_CONTAINER_USER" -a "$_CONTAINER_USER" != " " ] && [ "$_CONTAINER_USER" != "root" ]; then
@@ -170,14 +180,14 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         pushd $_CONTAINER_USER_HOME
         
         # Installing MATLAB as containerUser allows for support packages to be installed at the correct location.
-        wget -q https://www.mathworks.com/mpm/glnxa64/mpm \
-        && chmod +x mpm \
-        && sudo HOME=${_CONTAINER_USER_HOME} ./mpm install \
+        wget -q https://www.mathworks.com/mpm/glnxa64/mpm &&
+        chmod +x mpm &&
+        sudo HOME=${_CONTAINER_USER_HOME} ./mpm install \
         --release=${MATLAB_RELEASE} \
         --destination=${MATLAB_INSTALL_LOCATION} \
-        --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS} \
-        && sudo rm -f mpm /tmp/mathworks_root.log \
-        && sudo ln -s ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
+        --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS} &&
+        sudo rm -f mpm /tmp/mathworks_root.log &&
+        sudo ln -s ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
         
         ## Resetting to original context
         # exit will reset the user to root and call popd
@@ -188,18 +198,16 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         echo "Proceeding to install matlab as root user..."
         # Installs as root, because feature scripts run as root user.
         # Any support package installed here will not be accessible to non-root users of the system.
-        wget -q https://www.mathworks.com/mpm/glnxa64/mpm \
-        && chmod +x mpm \
-        && ./mpm install \
+        wget -q https://www.mathworks.com/mpm/glnxa64/mpm &&
+        chmod +x mpm &&
+        ./mpm install \
         --release=${MATLAB_RELEASE} \
         --destination=${MATLAB_INSTALL_LOCATION} \
-        --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS}\
-        && rm -f mpm /tmp/mathworks_root.log \
-        && ln -fs ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
+        --products ${MATLAB_PRODUCT_LIST} ${ADDITIONAL_MPM_FLAGS} &&
+        rm -f mpm /tmp/mathworks_root.log &&
+        ln -fs ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
     fi
-    
 fi
-
 
 popd
 ### Script Section End ###
