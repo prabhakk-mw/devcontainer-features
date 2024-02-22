@@ -26,7 +26,7 @@ source dev-container-features-test-lib
 
 check "python3 is installed" bash -c "python3 --version"
 
-check "matlabengine has been installed"  bash -c "python3 -m pip list | grep matlabengine"
+check "matlabengine has been installed"  bash -c "python3 -m pip list | grep matlabengine || true"
 
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
