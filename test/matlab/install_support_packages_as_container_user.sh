@@ -29,6 +29,10 @@ check "r2022a is installed" bash -c "cat /opt/matlab/r2022a/VersionInfo.xml | gr
 
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
 check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2022a/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
+
+# Verify that MATLAB engine for python is successfully installed
+check "MATLAB Engine for python is installed" bash -c "python3 -m pip list | grep -i 'matlabengine'"
+
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
 reportResults

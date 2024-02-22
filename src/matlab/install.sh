@@ -4,18 +4,36 @@
 #-------------------------------------------------------------------------------------------------------------
 # NOTE: The 'install.sh' entrypoint script is always executed as the root user.
 
+set -eu -o pipefail
+# exits on an error (-e, equivalent to -o errexit);
+# exits on an undefined variable (-u, equivalent to -o nounset);
+# exits on an error in piped-together commands (-o pipefail)
+
+# Uncomment to debug:
+# set -x
+# Or, set environment variable "SHELLOPTS=xtrace" before starting script
+
 ### Variable Declaration Begin ###
 
-MATLAB_RELEASE="${RELEASE:-"r2023b"}"
+## Set defaults to all the options in the feature.
 
-# Specify the list of products to install into MATLAB.
-MATLAB_PRODUCT_LIST="${PRODUCTS:-"MATLAB"}"
-
-# Specify MATLAB Install Location.
-MATLAB_INSTALL_LOCATION="${DESTINATION:-"/opt/matlab/${MATLAB_RELEASE}"}"
-
-# Specify default OS
+# r2023b is the latest available release.
+RELEASE="${RELEASE:-"r2023b"}"
 OS="${OS:-"ubuntu22.04"}"
+PRODUCTS="${PRODUCTS:-"MATLAB"}"
+DOC="${DOC:-"false"}"
+INSTALLGPU="${INSTALLGPU:-"false"}"
+DESTINATION="${DESTINATION:-"/opt/matlab/${RELEASE}"}"
+INSTALLMATLABPROXY="${INSTALLMATLABPROXY:-"false"}"
+INSTALLJUPYTERMATLABPROXY="${INSTALLJUPYTERMATLABPROXY:-"false"}"
+INSTALLMATLABENGINEFORPYTHON="${INSTALLMATLABENGINEFORPYTHON:-"false"}"
+STARTINDESKTOP="${STARTINDESKTOP:-"false"}"
+NETWORKLICENSEMANAGER="${NETWORKLICENSEMANAGER:-" "}"
+SKIPMATLABINSTALL="${SKIPMATLABINSTALL:-"false"}"
+
+MATLAB_RELEASE="${RELEASE}"
+MATLAB_PRODUCT_LIST="${PRODUCTS}"
+MATLAB_INSTALL_LOCATION="${DESTINATION}"
 
 ### Variable Declaration End ###
 ### Helper Functions Begin ###
@@ -47,17 +65,29 @@ function install_matlab_proxy() {
 
 function install_jupyter_matlab_proxy() {
     install_python_and_xvfb &&
-    python3 -m pip install --upgrade jupyter-matlab-proxy matlab-proxy
+    python3 -m pip install --upgrade jupyter-matlab-proxy matlab-proxy jupyterlab jupyterlab-git
 }
 
 function install_matlab_engine_for_python() {
+    # Installing the engine is tricky
+    # The installation can fail if the python version does not match the supported release
+    declare -A matlabengine_map
+    matlabengine_map['r2023b']="23.2"
+    matlabengine_map['r2023a']="9.14"
+    matlabengine_map['r2022b']="9.13"
+    matlabengine_map['r2022a']="9.12"
+    matlabengine_map['r2021b']="9.11"
+    matlabengine_map['r2021a']="9.10"
+    matlabengine_map['r2020b']="9.9"
+    
     export DEBIAN_FRONTEND=noninteractive && apt-get update &&
-    apt-get install --no-install-recommends -y python3-distutils &&
+    apt-get install --no-install-recommends -y \
+    python3 \
+    python3-pip &&
     apt-get clean &&
     apt-get -y autoremove &&
     rm -rf /var/lib/apt/lists/* &&
-    cd ${MATLAB_INSTALL_LOCATION}/extern/engines/python &&
-    python setup.py install || true
+    python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]} || true
 }
 
 ### Helper Functions End ###
@@ -78,12 +108,6 @@ fi
 if [ "${INSTALLJUPYTERMATLABPROXY}" == "true" ]; then
     echo "Installing jupyter-matlab-proxy"
     install_jupyter_matlab_proxy
-fi
-
-# Install MATLAB Engine for Python if requested
-if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
-    echo "Installing matlabengine"
-    install_matlab_engine_for_python
 fi
 
 if [ "${STARTINDESKTOP}" == "true" ] || [ "${STARTINDESKTOP}" == "test" ]; then
@@ -164,8 +188,8 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     
     echo "Container user is defined as : '$_CONTAINER_USER'"
     echo "Container user's effective home dir: '$_CONTAINER_USER_HOME'"
-    echo "Container user is defined as : '$_REMOTE_USER'"
-    echo "Container user's effective home dir: '$_REMOTE_USER_HOME'"
+    echo "Remote user is defined as : '$_REMOTE_USER'"
+    echo "Remote user's effective home dir: '$_REMOTE_USER_HOME'"
     
     ## 3. Install MATLAB using MPM
     if [ ! -z "$_CONTAINER_USER" -a "$_CONTAINER_USER" != " " ] && [ "$_CONTAINER_USER" != "root" ]; then
@@ -207,6 +231,12 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         rm -f mpm /tmp/mathworks_root.log &&
         ln -fs ${MATLAB_INSTALL_LOCATION}/bin/matlab /usr/local/bin/matlab
     fi
+fi
+
+# MATLAB Engine for Python can only be installed if MATLAB is on the PATH
+if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
+    echo "Installing matlabengine"
+    install_matlab_engine_for_python
 fi
 
 popd
