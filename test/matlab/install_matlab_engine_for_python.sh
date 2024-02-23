@@ -2,8 +2,15 @@
 
 # This test file will be executed against one of the scenarios devcontainer.json test that
 # includes the 'matlab' feature with
-# "startInDesktop": true,
-# "networkLicenseManager": "123@abc.com"
+# "image": "mathworks/matlab:r2023b",
+# "features": {
+#     "matlab": {
+#         "destination": "/opt/matlab/R2023b",
+#         "skipMATLABInstall": true,
+#         "installMatlabEngineForPython": true
+#     }
+# },
+# "containerUser": "matlab"
 
 # This test can be run with the following command:
 #
@@ -31,3 +38,12 @@ check "matlabengine has been installed"  bash -c "python3 -m pip list | grep mat
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
 reportResults
+
+
+#### Commands to test in container:
+# RELEASE=r2023b
+# RUN_INSTALL_SCRIPT="sudo env INSTALLMATLABENGINEFORPYTHON=true SKIPMATLABINSTALL=true _CONTAINER_USER=matlab \
+# _CONTAINER_USER_HOME=/home/matlab DESTINATION=/opt/matlab/${RELEASE^} RELEASE=${RELEASE} \
+# ~/install/install.sh "
+# TEST_IF_MATLABENGINE_INSTALLED="python3 -m pip list | grep matlabengine && echo PASSED! || echo FAILED!"
+# docker run -it --rm --entrypoint /bin/sh -v `pwd`/src/matlab/:/home/matlab/install mathworks/matlab:${RELEASE} -c "$RUN_INSTALL_SCRIPT && $TEST_IF_MATLABENGINE_INSTALLED"

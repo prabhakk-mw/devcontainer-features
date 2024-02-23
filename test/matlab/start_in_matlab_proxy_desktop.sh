@@ -2,8 +2,15 @@
 
 # This test file will be executed against one of the scenarios devcontainer.json test that
 # includes the 'matlab' feature with
-# "startInDesktop": true,
-# "networkLicenseManager": "123@abc.com"
+# "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+# "features": {
+#     "matlab": {
+#         "startInDesktop": "test",
+#         "networkLicenseManager": "123@abc.com",
+#         "skipMATLABInstall": true
+#     }
+# },
+# "containerUser": "vscode"
 
 # This test can be run with the following command:
 #

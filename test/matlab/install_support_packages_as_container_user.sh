@@ -5,6 +5,28 @@
 # Support package installation is special, because these packages need to be installed into
 # the end users HOME folder and not into the root users folders. Installing into root will
 # result in users being unable to access the Support Packages.
+#
+# "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+# "features": {
+#     "ghcr.io/devcontainers/features/common-utils:2": {
+#         "installZsh": false,
+#         "installOhMyZshConfig": false,
+#         "username": "vscode",
+#         "userUid": "1000",
+#         "userGid": "1000",
+#         "upgradePackages": "true"
+#     },
+#     "ghcr.io/devcontainers/features/python": {
+#         "version": "3.9",
+#         "installTools": false
+#     },
+#     "matlab": {
+#         "release": "r2022a",
+#         "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+#         "installMatlabEngineForPython": true
+#     }
+# },
+# "containerUser": "vscode"
 
 # This test can be run with the following command:
 #

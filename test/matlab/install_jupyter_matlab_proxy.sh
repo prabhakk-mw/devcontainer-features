@@ -1,7 +1,14 @@
 #!/bin/bash
 
 # This test file will be executed against one of the scenarios devcontainer.json test that
-# includes the 'matlab' feature with "installJupyterMatlabProxy": "true" option.
+# includes the 'matlab' feature with:
+# "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+# "features": {
+#     "matlab": {
+#         "installJupyterMatlabProxy": true,
+#         "skipMATLABInstall": true
+#     }
+# }
 
 # This test can be run with the following command:
 #
