@@ -13,7 +13,7 @@
 #                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu \
 #                   `pwd`
 # OR:
-# devcontainer features test -p `pwd` -f matlab --filter install_matlab_engine_for_python
+# devcontainer features test -p `pwd` -f matlab --filter install_matlab_engine_for_python --log-level debug
 
 set -e
 
@@ -26,7 +26,7 @@ source dev-container-features-test-lib
 
 check "python3 is installed" bash -c "python3 --version"
 
-check "matlabengine has been installed"  bash -c "python3 -m pip list | grep matlabengine || true"
+check "matlabengine has been installed"  bash -c "python3 -m pip list | grep matlabengine"
 
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.

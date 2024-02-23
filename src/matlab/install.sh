@@ -87,7 +87,10 @@ function install_matlab_engine_for_python() {
     apt-get clean &&
     apt-get -y autoremove &&
     rm -rf /var/lib/apt/lists/* &&
-    python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]} || true
+    python3 -m pip install --upgrade pip &&
+    env LD_LIBRARY_PATH=${MATLAB_INSTALL_LOCATION}/bin/glnxa64 \
+    python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
+    # python3 -m pip install matlabengine~=${matlabengine_map[$MATLAB_RELEASE]}
 }
 
 ### Helper Functions End ###
@@ -242,3 +245,14 @@ fi
 popd
 ### Script Section End ###
 echo "MATLAB feature installation is complete."
+exit 0
+
+#### Commands to test in container:
+RELEASE=r2023b
+RUN_INSTALL_SCRIPT="sudo env INSTALLMATLABENGINEFORPYTHON=true SKIPMATLABINSTALL=true _CONTAINER_USER=matlab \
+_CONTAINER_USER_HOME=/home/matlab DESTINATION=/opt/matlab/${RELEASE^} RELEASE=${RELEASE} \
+~/install/install.sh "
+TEST_IF_MATLABENGINE_INSTALLED="python3 -m pip list | grep matlabengine && echo PASSED! || echo FAILED!"
+docker run -it --rm --entrypoint /bin/sh -v `pwd`/src/matlab/:/home/matlab/install mathworks/matlab:${RELEASE} -c "$RUN_INSTALL_SCRIPT && $TEST_IF_MATLABENGINE_INSTALLED"
+
+

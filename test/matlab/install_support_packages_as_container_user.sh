@@ -14,7 +14,7 @@
 #                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu \
 #                   `pwd`
 # OR:
-# devcontainer features test -p `pwd` -f matlab --filter install_support_packages_as_container_user
+# devcontainer features test -p `pwd` -f matlab --filter install_support_packages_as_container_user  --log-level debug
 set -e
 
 # Optional: Import test library bundled with the devcontainer CLI
@@ -33,7 +33,7 @@ check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/
 check "python3 is installed " bash -c "python3 --version"
 
 # Verify that MATLAB engine for python is successfully installed
-check "MATLAB Engine for python is installed" bash -c "python3 -m pip list | grep -i 'matlabengine' || true"
+check "MATLAB Engine for python is installed" bash -c "python3 -m pip list | grep -i 'matlabengine'"
 
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.

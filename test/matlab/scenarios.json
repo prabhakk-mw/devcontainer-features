@@ -50,6 +50,7 @@
                 "skipMATLABInstall": true,
                 "installMatlabEngineForPython": true
             }
-        }
+        },
+        "containerUser": "matlab"
     }
 }
