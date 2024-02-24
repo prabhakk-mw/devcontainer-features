@@ -37,7 +37,7 @@
                 "MATLAB Simulink Signal_Processing_Toolbox"
             ],
             "default": "MATLAB",
-            "description": "Products to install, specified as a list of product names separated by spaces."
+            "description": "Products to install, specified as a list of product names separated by spaces.</br> See [MPM.md](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md#product-installation-options) for more information on product specification and availability. "
         },
         "doc": {
             "type": "boolean",
