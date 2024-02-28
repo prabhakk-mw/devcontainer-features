@@ -15,7 +15,7 @@
                 "installTools": false
             },
             "matlab": {
-                "release": "r2022a",
+                "release": "r2023a",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true
             }
@@ -52,5 +52,25 @@
             }
         },
         "containerUser": "matlab"
+    },
+    "check_ubi9": {
+        "image": "registry.access.redhat.com/ubi9/ubi:latest",
+        "features": {
+            "ghcr.io/devcontainers/features/common-utils:2": {
+                "installZsh": false,
+                "installOhMyZshConfig": false,
+                "username": "vscode",
+                "userUid": "1000",
+                "userGid": "1000",
+                "upgradePackages": "true"
+            },
+            "matlab": {
+                "release": "r2023b",
+                "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+                "startInDesktop": "test",
+                "installJupyterMatlabProxy": true
+            }
+        },
+        "containerUser": "vscode"
     }
 }

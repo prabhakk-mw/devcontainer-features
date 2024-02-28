@@ -16,19 +16,11 @@
                 "r2021a",
                 "r2020b",
                 "r2020a",
+                "r2019b",
                 "r2019a"
             ],
             "default": "r2023b",
             "description": "MATLAB Release to install."
-        },
-        "os": {
-            "type": "string",
-            "enum": [
-                "ubuntu22.04",
-                "ubuntu20.04"
-            ],
-            "default": "ubuntu22.04",
-            "description": "OS on which feature is being installed."
         },
         "products": {
             "type": "string",
