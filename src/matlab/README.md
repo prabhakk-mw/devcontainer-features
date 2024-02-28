@@ -16,11 +16,10 @@ Installs MATLAB, supporting packages and tools.
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
 | release | MATLAB Release to install. | string | r2023b |
-| os | OS on which feature is being installed. | string | ubuntu22.04 |
-| products | Products to install, specified as a list of product names separated by spaces. </br> See [MPM.md](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md#product-installation-options) for more information.| string | MATLAB |
+| products | Products to install, specified as a list of product names separated by spaces.</br> See [MPM.md](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md#product-installation-options) for more information on product specification and availability.  | string | MATLAB |
 | doc | Flag to install documentation and examples. (R2022b and earlier releases) | boolean | false |
 | installGpu | Skips installation of GPU libraries when you install Parallel Computing Toolbox. (R2023a and later releases) | boolean | false |
-| destination | Full path to the installation destination folder. </br> test | string | /opt/matlab/$RELEASE |
+| destination | Full path to the installation destination folder. | string | /opt/matlab/$RELEASE |
 | installMatlabProxy | Installs matlab-proxy and its dependencies. (R2020b and later releases) | boolean | false |
 | installJupyterMatlabProxy | Installs jupyter-matlab-proxy and its dependencies. (R2020b and later releases) | boolean | false |
 | installMatlabEngineForPython | Installs the MATLAB Engine for Python if the destination option is set correctly. | boolean | false |
