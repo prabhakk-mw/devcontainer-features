@@ -7,7 +7,7 @@ This repository contains a [Feature](https://containers.dev/implementors/feature
 ### `matlab`
 
 Installs MATLAB, Simulink®, and other MathWorks® products or support packages into container via [`mpm`](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md)
-```jsonc
+```json
 {
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "features": {
