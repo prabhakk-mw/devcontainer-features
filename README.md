@@ -1,8 +1,8 @@
-# MATLAB® Development Container Features
+# Development Container Feature for MATLAB
 
 ## Overview
 
-This repository contains a _collection_ of (currently just one) [Feature](https://containers.dev/implementors/features/) for using MATLAB in a [development container](https://containers.dev/).
+This repository contains a [Feature](https://containers.dev/implementors/features/) for using MATLAB in a [development container](https://containers.dev/).
 
 ### `matlab`
 
@@ -11,8 +11,8 @@ Installs MATLAB, Simulink®, and other MathWorks® products or support packages 
 {
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "features": {
-        "ghcr.io/mw-gh-integration/devcontainer-features/matlab:0": {
-            "release": "r2023b",
+        "ghcr.io/mathworks/devcontainer-features/matlab:0": {
+            "release": "r2024a",
             "products": "MATLAB Symbolic_Math_Toolbox"
         }
     }
@@ -21,5 +21,5 @@ Installs MATLAB, Simulink®, and other MathWorks® products or support packages 
 
 ```bash
 $ which matlab
-/opt/matlab/r2023b/bin/matlab
+/opt/matlab/r2024a/bin/matlab
 ```

@@ -8,6 +8,7 @@
         "release": {
             "type": "string",
             "proposals": [
+                "r2024a",
                 "r2023b",
                 "r2023a",
                 "r2022b",
@@ -19,7 +20,7 @@
                 "r2019b",
                 "r2019a"
             ],
-            "default": "r2023b",
+            "default": "r2024a",
             "description": "MATLAB Release to install."
         },
         "products": {

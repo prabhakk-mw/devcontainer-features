@@ -43,7 +43,7 @@
         "containerUser": "vscode"
     },
     "install_matlab_engine_for_python": {
-        "image": "mathworks/matlab:r2023b",
+        "image": "mathworks/matlab:r2024a",
         "features": {
             "matlab": {
                 "destination": "/opt/matlab/R2023b",
@@ -65,7 +65,7 @@
                 "upgradePackages": "true"
             },
             "matlab": {
-                "release": "r2023b",
+                "release": "r2024a",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "startInDesktop": "test",
                 "installJupyterMatlabProxy": true

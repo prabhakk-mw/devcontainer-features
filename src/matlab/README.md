@@ -7,7 +7,7 @@ Installs MATLAB, supporting packages and tools.
 
 ```json
 "features": {
-    "ghcr.io/mw-gh-integration/devcontainer-features/matlab:0": {}
+    "ghcr.io/mathworks/devcontainer-features/matlab:0": {}
 }
 ```
 
@@ -15,7 +15,7 @@ Installs MATLAB, supporting packages and tools.
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| release | MATLAB Release to install. | string | r2023b |
+| release | MATLAB Release to install. | string | r2024a |
 | products | Products to install, specified as a list of product names separated by spaces.</br> See [MPM.md](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md#product-installation-options) for more information on product specification and availability.  | string | MATLAB |
 | doc | Flag to install documentation and examples. (R2022b and earlier releases) | boolean | false |
 | installGpu | Skips installation of GPU libraries when you install Parallel Computing Toolbox. (R2023a and later releases) | boolean | false |
@@ -37,4 +37,4 @@ Installs MATLAB, supporting packages and tools.
 
 ---
 
-_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/mw-gh-integration/devcontainer-features/blob/main/src/matlab/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
+_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/mathworks/devcontainer-features/blob/main/src/matlab/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
