@@ -3,7 +3,7 @@
     "id": "matlab",
     "version": "0.0.7",
     "description": "Installs MATLAB with supporting packages and tools.",
-    "documentationURL": "https://github.com/mathworks/devcontainer-features",
+    "documentationURL": "https://github.com/prabhakk-mw/devcontainer-features",
     "options": {
         "release": {
             "type": "string",
