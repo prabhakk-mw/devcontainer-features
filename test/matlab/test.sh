@@ -1,5 +1,8 @@
 #!/bin/bash
-
+#-------------------------------------------------------------------------------------------------------------
+# Copyright 2024 The MathWorks, Inc.
+#-------------------------------------------------------------------------------------------------------------
+#
 # This test file will be executed against an auto-generated devcontainer.json that
 # includes the 'matlab' Feature with no options.
 #

@@ -1,5 +1,8 @@
 #!/bin/bash
-
+#-------------------------------------------------------------------------------------------------------------
+# Copyright 2024 The MathWorks, Inc.
+#-------------------------------------------------------------------------------------------------------------
+#
 # This test file will be executed against one of the scenarios devcontainer.json test that
 # includes the 'matlab' feature with the r2023a release, and a support package installed.
 # Support package installation is special, because these packages need to be installed into

@@ -110,7 +110,7 @@ function create_home_folder_for_container_user() {
             ORIG_UID=$(id -u $_CONTAINER_USER)
             ORIG_GID=$(id -g $_CONTAINER_USER)
             
-            # adduser is the preffered high level function to create a user.
+            # adduser is the preferred high level function to create a user.
             # The "-m" flag is used to indicate the creation of the home folder.
             # The "-M" flag is used to avoid the creation of the home folder.
             ## We are recreating the CONTAINER_USER after deleting to avoid the "user already exists" error
@@ -238,22 +238,6 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         # The "codespaces" user returns an empty _CONTAINER_USER_HOME
         echo "Container user is defined as : '$_CONTAINER_USER'"
         echo "Container user's effective home dir: '$_CONTAINER_USER_HOME'"
-        # if [ "$_CONTAINER_USER_HOME" == " " ]; then
-        #     echo "Creating home directory for CONTAINER_USER"
-        #     ORIG_UID=$(id -u $_CONTAINER_USER)
-        #     ORIG_GID=$(id -g $_CONTAINER_USER)
-        
-        #     adduser tempuser -M -u $(($ORIG_UID + 1)) -g $ORIG_GID && \
-        #     userdel $_CONTAINER_USER && \
-        #     adduser $_CONTAINER_USER -m -u $ORIG_UID -g $ORIG_GID && \
-        #     userdel tempuser
-        #     _CONTAINER_USER_HOME=$(cat /etc/passwd | grep $_CONTAINER_USER | cut -d ':' -f 6)
-        #     # mkdir /home/$_CONTAINER_USER && \
-        #     # cp -rT /etc/skel /home/ $_CONTAINER_USER && \
-        #     # chown -R ${_CONTAINER_USER}:${_CONTAINER_USER} /home/$_CONTAINER_USER
-        #     # _CONTAINER_USER_HOME="/home/$_CONTAINER_USER"
-        #     echo "New home directory: ${_CONTAINER_USER_HOME}"
-        # fi
         
         create_home_folder_for_container_user
         

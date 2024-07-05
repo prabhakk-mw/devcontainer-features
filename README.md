@@ -28,6 +28,6 @@ $ which matlab
 
 ----
 
-Copyright 2021-2024 The MathWorks, Inc.
+Copyright 2024 The MathWorks, Inc.
 
 ----
