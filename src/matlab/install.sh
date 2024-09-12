@@ -98,7 +98,7 @@ function install_matlab_engine_for_python() {
     matlabengine_map['r2020b']="9.9"
     
     install_python_and_pip &&
-    env LD_LIBRARY_PATH=${MATLAB_INSTALL_LOCATION}/bin/glnxa64 \
+    env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MATLAB_INSTALL_LOCATION}/bin/glnxa64 \
     python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
 }
 

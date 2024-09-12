@@ -46,12 +46,14 @@
         "image": "mathworks/matlab:r2024a",
         "features": {
             "matlab": {
-                "release": "r2024a",
                 "skipMATLABInstall": true,
                 "installMatlabEngineForPython": true
             }
         },
-        "containerUser": "matlab"
+        "containerUser": "matlab",
+        "containerEnv":{
+            "LD_LIBRARY_PATH": "/opt/matlab/R2024a/bin/glnxa64"
+        }
     },
     "check_ubi9": {
         "image": "registry.access.redhat.com/ubi9/ubi:latest",
