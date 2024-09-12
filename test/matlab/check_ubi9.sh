@@ -53,7 +53,7 @@ check "is ubi9 " bash -c "cat /etc/os-release | grep 'ID.*rhel' "
 check "r2024a is installed" bash -c "cat /opt/matlab/r2024a/VersionInfo.xml | grep '<release>R2023b</release>'"
 
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
-check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2023b/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
+check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2024a/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
 
 
 check "python3 is installed" python3 --version

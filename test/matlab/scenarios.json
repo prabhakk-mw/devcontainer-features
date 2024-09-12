@@ -46,7 +46,6 @@
         "image": "mathworks/matlab:r2024a",
         "features": {
             "matlab": {
-                "destination": "/opt/matlab/R2023b",
                 "skipMATLABInstall": true,
                 "installMatlabEngineForPython": true
             }

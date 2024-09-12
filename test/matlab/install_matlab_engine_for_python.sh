@@ -8,7 +8,7 @@
 # "image": "mathworks/matlab:r2024a",
 # "features": {
 #     "matlab": {
-#         "destination": "/opt/matlab/R2023b",
+#         "destination": "/opt/matlab/R2024a",
 #         "skipMATLABInstall": true,
 #         "installMatlabEngineForPython": true
 #     }

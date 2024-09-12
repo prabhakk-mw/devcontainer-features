@@ -136,7 +136,7 @@ function ihf_get_remove_cmd() {
 # returns "true/false" string if MATLAB_RELEASE is valid
 function ihf_is_valid_matlab_release() {
     # List of supported MATLAB_RELEASE values
-    local _SUPPORTED_MATLAB_RELEASES=("r2024a" "r2023b" "r2023a" "r2022b" "r2022a" "r2021b" "r2021a" "r2020b" "r2020a" "r2019b" "r2019a")
+    local _SUPPORTED_MATLAB_RELEASES=("r2024b" "r2024a" "r2023b" "r2023a" "r2022b" "r2022a" "r2021b" "r2021a" "r2020b" "r2020a" "r2019b" "r2019a")
     
     ## Validate MATLAB_RELEASE
     if [ -z "$MATLAB_RELEASE" ]; then
