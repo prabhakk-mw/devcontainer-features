@@ -34,6 +34,9 @@ MATLAB_RELEASE="${RELEASE}"
 MATLAB_PRODUCT_LIST="${PRODUCTS}"
 MATLAB_INSTALL_LOCATION="${DESTINATION}"
 
+# Needed by the MATLAB Engine for Python.
+# Appends to any existing value of LD_LIBRARY_PATH the path where MATLAB is installed by this script.
+_LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"${LD_LIBRARY_PATH}:"}${MATLAB_INSTALL_LOCATION}/bin/glnxa64"
 
 _CONTAINER_USER_HOME="${_CONTAINER_USER_HOME:-"undefined"}"
 _CONTAINER_USER="${_CONTAINER_USER:-"undefined"}"
@@ -98,7 +101,8 @@ function install_matlab_engine_for_python() {
     matlabengine_map['r2020b']="9.9"
     
     install_python_and_pip &&
-    env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MATLAB_INSTALL_LOCATION}/bin/glnxa64 \
+    
+    env LD_LIBRARY_PATH=${_LD_LIBRARY_PATH} \
     python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
 }
 
