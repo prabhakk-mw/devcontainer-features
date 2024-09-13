@@ -18,11 +18,11 @@ set -eu -o pipefail
 ## Set defaults to all the options in the feature.
 
 # r2024b is the latest available release.
-RELEASE="${RELEASE:-"r2024b"}"
+RELEASE="${RELEASE:-"R2024b"}"
 PRODUCTS="${PRODUCTS:-"MATLAB"}"
 DOC="${DOC:-"false"}"
 INSTALLGPU="${INSTALLGPU:-"false"}"
-DESTINATION="${DESTINATION:-"/opt/matlab/${RELEASE}"}"
+DESTINATION="${DESTINATION:-"/opt/matlab/${RELEASE^}"}"
 INSTALLMATLABPROXY="${INSTALLMATLABPROXY:-"false"}"
 INSTALLJUPYTERMATLABPROXY="${INSTALLJUPYTERMATLABPROXY:-"false"}"
 INSTALLMATLABENGINEFORPYTHON="${INSTALLMATLABENGINEFORPYTHON:-"false"}"
@@ -102,6 +102,8 @@ function install_matlab_engine_for_python() {
     
     install_python_and_pip &&
     
+    echo "Setting LD_LIBRARY_PATH=${_LD_LIBRARY_PATH}"
+
     env LD_LIBRARY_PATH=${_LD_LIBRARY_PATH} \
     python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
 }
