@@ -11,11 +11,11 @@
                 "upgradePackages": "true"
             },
             "ghcr.io/devcontainers/features/python": {
-                "version": "3.9",
+                "version": "os-provided",
                 "installTools": false
             },
             "matlab": {
-                "release": "r2023a",
+                "release": "r2022b",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true
             }
