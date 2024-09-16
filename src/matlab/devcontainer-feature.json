@@ -45,8 +45,8 @@
         },
         "destination": {
             "type": "string",
-            "default": "/opt/matlab/${RELEASE}",
-            "description": "Full path to the installation destination folder. Example: R2024b"
+            "default": "",
+            "description": "Full path to the installation destination folder. Default: /opt/matlab/${RELEASE^}"
         },
         "installMatlabProxy": {
             "default": false,

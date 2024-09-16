@@ -1,4 +1,12 @@
 {
+    "install_release_on_ubuntu":{
+        "image": "ubuntu:22.04",
+        "features":{
+            "matlab":{
+                "release" : "r2022b"
+            }
+        }
+    },
     "install_support_packages_as_container_user": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {

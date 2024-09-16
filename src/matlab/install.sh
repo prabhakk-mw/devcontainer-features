@@ -34,6 +34,8 @@ MATLAB_RELEASE="${RELEASE^}"
 MATLAB_PRODUCT_LIST="${PRODUCTS}"
 MATLAB_INSTALL_LOCATION="${DESTINATION}"
 
+echo "MATLAB_INSTALL_LOCATION: ${MATLAB_INSTALL_LOCATION}"
+
 # Needed by the MATLAB Engine for Python.
 # Appends to any existing value of LD_LIBRARY_PATH the path where MATLAB is installed by this script.
 _LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"${LD_LIBRARY_PATH}:"}${MATLAB_INSTALL_LOCATION}/bin/glnxa64"
@@ -249,6 +251,8 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
         create_home_folder_for_container_user
         
         echo "Proceeding to install matlab as '$_CONTAINER_USER'..."
+
+        echo "Install location for MATLAB: ${MATLAB_INSTALL_LOCATION}"
         
         # Switching to container user
         su $_CONTAINER_USER
