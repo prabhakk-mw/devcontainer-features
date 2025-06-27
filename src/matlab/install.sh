@@ -65,7 +65,7 @@ function install_python_and_pip() {
         ihf_remove_packages "python3-requests"
     fi
     ihf_install_packages "python3 python3-pip" && \
-    python3 -m pip install --upgrade pip
+    python3 -m pip install --break-system-packages --upgrade pip
     
 }
 
