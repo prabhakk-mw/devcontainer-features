@@ -1,9 +1,17 @@
 {
-    "install_release_on_ubuntu":{
+    "install_release_on_ubuntu24.04": {
+        "image": "ubuntu:24.04",
+        "features": {
+            "matlab": {
+                "release": "r2025a"
+            }
+        }
+    },
+    "install_release_on_ubuntu": {
         "image": "ubuntu:22.04",
-        "features":{
-            "matlab":{
-                "release" : "r2022b"
+        "features": {
+            "matlab": {
+                "release": "r2022b"
             }
         }
     },

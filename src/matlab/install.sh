@@ -17,8 +17,8 @@ set -eu -o pipefail
 
 ## Set defaults to all the options in the feature.
 
-# R2024b is the latest available release.
-RELEASE="${RELEASE:-"R2024b"}"
+# R2025a is the latest available release.
+RELEASE="${RELEASE:-"R2025a"}"
 PRODUCTS="${PRODUCTS:-"MATLAB"}"
 DOC="${DOC:-"false"}"
 INSTALLGPU="${INSTALLGPU:-"false"}"
@@ -92,6 +92,7 @@ function install_matlab_engine_for_python() {
     # Installing the engine is tricky
     # The installation can fail if the python version does not match the supported release
     declare -A matlabengine_map
+    matlabengine_map['R2025a']="25.1"
     matlabengine_map['R2024b']="24.2"
     matlabengine_map['R2024a']="24.1"
     matlabengine_map['R2023b']="23.2"
@@ -225,7 +226,7 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     
     # Handle GPU installation
     if [ "${INSTALLGPU}" == "false" ]; then
-        RELEASES_THAT_SUPPORT_NOGPU=("R2024b" "R2024a" "R2023b" "R2023a")
+        RELEASES_THAT_SUPPORT_NOGPU=("R2025a" "R2024b" "R2024a" "R2023b" "R2023a")
         # The value variable is assigned a regex that matches the exact value
         value="\<${MATLAB_RELEASE}\>"
         if [[ ${RELEASES_THAT_SUPPORT_NOGPU[@]} =~ $value ]]; then
