@@ -65,7 +65,7 @@ function install_python_and_pip() {
         ihf_remove_packages "python3-requests"
     fi
     ihf_install_packages "python3 python3-pip" && \
-    python3 -m pip install --upgrade pip
+    python3 -m pip install --break-system-packages --upgrade pip
     
 }
 
@@ -79,13 +79,13 @@ function install_xvfb() {
 function install_matlab_proxy() {
     install_python_and_pip &&
     install_xvfb &&
-    python3 -m pip install --upgrade matlab-proxy
+    python3 -m pip install --break-system-packages --upgrade matlab-proxy
 }
 
 function install_jupyter_matlab_proxy() {
     install_python_and_pip &&
     install_xvfb &&
-    python3 -m pip install --upgrade jupyter-matlab-proxy matlab-proxy jupyterlab jupyterlab-git
+    python3 -m pip install --break-system-packages --upgrade jupyter-matlab-proxy matlab-proxy jupyterlab jupyterlab-git
 }
 
 function install_matlab_engine_for_python() {
@@ -108,7 +108,7 @@ function install_matlab_engine_for_python() {
     echo "Setting LD_LIBRARY_PATH=${_LD_LIBRARY_PATH}"
 
     env LD_LIBRARY_PATH=${_LD_LIBRARY_PATH} \
-    python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
+    python3 -m pip install --break-system-packages matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
 }
 
 # Create a home folder for non-root, undefined CONTAINER_USER, if not already available
