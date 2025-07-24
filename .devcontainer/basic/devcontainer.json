@@ -1,0 +1,36 @@
+{
+    // "image": "ubuntu:24.04",
+    // "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    // "remoteUser": "vscode",
+    "image": "mathworks/matlab:r2025a",
+    "containerUser": "matlab",
+    "features": {
+        "../matlab": {
+            "release": "r2025a",
+            "skipMATLABInstall": true,
+            "installMatlabProxy": true,
+            "installJupyterMatlabProxy": true,
+            "installMatlabEngineForPython": true
+        }
+    },
+    // Configure VSCode Extensions
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "MathWorks.language-matlab",
+                "ms-toolsai.jupyter",
+                "ms-python.python"
+            ],
+            "settings": {
+                "MATLAB.signIn": true,
+                "python.venvPath": "/opt/pipx/venvs/",
+                // Marks MATLAB Kernel as a trusted source
+                "jupyter.kernels.trusted": [
+                    // "/usr/share/jupyter/kernels/jupyter_matlab_kernel/kernel.json",
+                    "opt/pipx/venvs/matlab-proxy/share/jupyter/kernels/jupyter_matlab_kernel/kernel.json"
+                ]
+            }
+        }
+    },
+    "onCreateCommand": "echo =IAMUSER===$(whoami)===="
+}

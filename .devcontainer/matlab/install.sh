@@ -46,10 +46,13 @@ _CONTAINER_USER="${_CONTAINER_USER:-"undefined"}"
 _SCRIPT_LOCATION=$(dirname $(readlink -f "$0"))
 
 # PIPX settings, which be replaced with the --global flag once pipx versions >1.5 are available from APT
-_PIPX_HOME=/opt/pipx
-_PIPX_BIN_DIR=/usr/local/bin
-_PIPX_MAN_DIR=/usr/local/share/man
-_PIPX_CMD="env PIPX_HOME=${_PIPX_HOME} PIPX_BIN_DIR=${_PIPX_BIN_DIR} PIPX_MAN_DIR=${_PIPX_MAN_DIR} pipx"
+# _PIPX_HOME=/opt/pipx
+# _PIPX_BIN_DIR=/usr/local/bin
+# _PIPX_MAN_DIR=/usr/local/share/man
+# _PIPX_INSTALL="env PIPX_HOME=${_PIPX_HOME} PIPX_BIN_DIR=${_PIPX_BIN_DIR} PIPX_MAN_DIR=${_PIPX_MAN_DIR} pipx install"
+_PIPX_UNINSTALL="pipx uninstall"
+_PIPX_INSTALL="pipx install --global"
+_PIPX_INJECT="pipx inject"
 
 ### Variable Declaration End ###
 ### Helper Functions Begin ###
@@ -72,27 +75,57 @@ function install_xvfb() {
     fi
 }
 
-function install_pipx() {
-    ihf_install_packages "pipx" &&
-    $_PIPX_CMD ensurepath
+function install_python_and_pip() {
+    if [ "$(ihf_is_debian_or_rhel)" == "rhel" ]; then
+        # uninstalling python3-requests package as it cannot be updated by subsequent install command.
+        ihf_remove_packages "python3-requests"
+    fi
+    ihf_install_packages "python3 python3-pip"
 }
 
+function install_pipx() {
+    ## The OS version of PIPX is old.
+    # ihf_install_packages "pipx"
+
+    # Cannot install PIPX in the presence of pipx installed by system
+    ihf_remove_packages "pipx"
+
+    # Then install PIPX through the PyPI to get the latest version of PIPX
+    python3 -m pip install --break-system-packages pipx
+
+    pipx ensurepath --prepend
+}
+
+
+# matlab-proxy is the pipx environment into which MW packages will be installed 
+_MATLAB_PROXY_HAS_BEEN_INSTALLED=0
 function install_matlab_proxy() {
-    install_pipx &&
-    install_xvfb &&
-    $_PIPX_CMD install matlab-proxy
+    if [ "$_MATLAB_PROXY_HAS_BEEN_INSTALLED" -eq 0 ]; then 
+        install_xvfb
+
+        ## Remove old references to matlab-proxy
+        # can't remove references that have been placed on the PATH by MATLAB user
+        # $_PIPX_UNINSTALL matlab-proxy &&
+        $_PIPX_INSTALL matlab-proxy
+
+        # Fresh Install  
+        # Ensure that PIPX places installed applications on top of the PATH
+        _MATLAB_PROXY_HAS_BEEN_INSTALLED=1
+    else
+        echo "MATLAB Proxy has been installed."
+    fi
 }
 
 function install_jupyter_matlab_proxy() {
     install_matlab_proxy &&
     # TODO: Think about how to inject into existing Jupyter environments.
     # This will override other Jupyter environments.
-    $_PIPX_CMD inject --include-apps --include-deps matlab-proxy jupyter-matlab-proxy jupyterlab jupyter 
+    $_PIPX_INJECT --include-apps --include-deps matlab-proxy jupyter-matlab-proxy jupyterlab jupyter 
 }
 
 function install_matlab_engine_for_python() {
-    # Installing the engine is tricky
-    # The installation can fail if the python version does not match the supported release
+    # TODO: Skip installation if MATLAB Engine for Python does not support of Python version
+    # See: https://mathworks.com/support/requirements/python-compatibility.html
     declare -A matlabengine_map
     matlabengine_map['R2025a']="25.1"
     matlabengine_map['R2024b']="24.2"
@@ -108,7 +141,7 @@ function install_matlab_engine_for_python() {
     
     install_matlab_proxy && \
     env LD_LIBRARY_PATH=${_LD_LIBRARY_PATH} \
-    $_PIPX_CMD inject matlab-proxy matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
+    $_PIPX_INJECT matlab-proxy matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
     echo "Setting LD_LIBRARY_PATH=${_LD_LIBRARY_PATH}"
 }
 
@@ -158,6 +191,9 @@ fi
 
 MATLAB_FEATURE_INSTALL_TMPDIR=/tmp/matlab-feature-install
 mkdir -p $MATLAB_FEATURE_INSTALL_TMPDIR && pushd $MATLAB_FEATURE_INSTALL_TMPDIR
+
+install_python_and_pip
+install_pipx
 
 # Install matlab-proxy if requested
 if [ "${INSTALLMATLABPROXY}" == "true" ]; then
