@@ -1,9 +1,9 @@
 {
     // "image": "ubuntu:24.04",
-    // "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-    // "remoteUser": "vscode",
-    "image": "mathworks/matlab:r2025a",
-    "containerUser": "matlab",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "remoteUser": "vscode",
+    // "image": "mathworks/matlab:r2025a",
+    // "containerUser": "matlab",
     "features": {
         "../matlab": {
             "release": "r2025a",
