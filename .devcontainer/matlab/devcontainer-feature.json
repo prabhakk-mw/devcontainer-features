@@ -102,8 +102,8 @@
             ],
             "settings": {
                 "MATLAB.indexWorkspace": true,
-                "MATLAB.installPath": "/usr/local/bin/matlab",
-                "MATLAB.matlabConnectionTiming": "never",
+                "MATLAB.signIn": true,
+                "MATLAB.matlabConnectionTiming": "onDemand",
                 "MATLAB.telemetry": true
             }
         }

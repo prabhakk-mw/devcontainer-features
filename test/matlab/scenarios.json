@@ -59,11 +59,11 @@
         "containerUser": "vscode"
     },
     "install_matlab_engine_for_python": {
-        "image": "mathworks/matlab:r2024a",
+        "image": "mathworks/matlab:r2024b",
         "features": {
             "matlab": {
-                "release": "r2024a",
-                "destination": "/opt/matlab/R2024a",
+                "release": "r2024b",
+                "destination": "/opt/matlab/R2024b",
                 "skipMATLABInstall": true,
                 "installMatlabEngineForPython": true
             }

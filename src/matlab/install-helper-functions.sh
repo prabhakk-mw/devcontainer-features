@@ -34,12 +34,11 @@ function ihf_get_matlab_deps_os() {
     case ${LINUX_DISTRO} in
         debian)
             if [[ "${ID}" == "ubuntu" ]]; then
-                local SUPPORTED_VERSION_CODENAME="focal jammy"
                 MATLAB_DEPS_OS_VERSION=${ID}${VERSION_ID}
-                elif [[ "${ID}" == "debian" ]]; then
-                local SUPPORTED_VERSION_CODENAME="bullseye bookworm"
+            elif [[ "${ID}" == "debian" ]]; then
                 local UBUNTU_VERSION_ID=${VERSION_ID/11/20.04}
                 UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/12/22.04}
+                UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/13/24.04}
                 MATLAB_DEPS_OS_VERSION=ubuntu${UBUNTU_VERSION_ID}
             fi
         ;;

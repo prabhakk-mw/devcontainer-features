@@ -25,6 +25,7 @@
             ],
             "settings": {
                 "MATLAB.signIn": true,
+                // "MATLAB.installPath": "/opt/matlab/R2025a",
                 // "python.venvPath": "/opt/pipx/venvs/",
                 // Marks MATLAB Kernel as a trusted source
                 "jupyter.kernels.trusted": [
