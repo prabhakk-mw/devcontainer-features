@@ -8,6 +8,7 @@
         "release": {
             "type": "string",
             "proposals": [
+                "R2025b",
                 "R2025a",
                 "R2024b",
                 "R2024a",
@@ -59,6 +60,11 @@
             "description": "Installs jupyter-matlab-proxy and its dependencies (R2020b and later releases).",
             "type": "boolean"
         },
+        "installJupyterLab": {
+            "default": false,
+            "description": "Installs jupyterlab",
+            "type": "boolean"
+        },
         "installMatlabEngineForPython": {
             "default": false,
             "description": "Installs the MATLAB Engine for Python if the destination option is set correctly.",
@@ -86,14 +92,8 @@
             "type": "boolean",
             "default": false,
             "description": "Set to true if you do not want to install MATLAB, for example if you only want to install `matlab-proxy` or `jupyter-matlab-proxy`."
-        },
-        "addContainerUserToDevGroup":{
-            "type": "string",
-            "default": "",
-            "description": "Enter the name of the containerUser that should be given access to the mounted folder. When containerUserName is provided, a group is created and the provided username is added to that group. The onCreateCommand Lifecycle hook then sets the permissions for that user to Read/Write/Execute from the mounted workspace folders."
         }
     },
-    // "onCreateCommand": "bash ?",
     "postStartCommand": "( ls ~/.startmatlabdesktop >> /dev/null 2>&1 && env MWI_APP_PORT=8888 matlab-proxy-app 2>/dev/null ) || echo 'Will not start matlab-proxy-app...'",
     "customizations": {
         "vscode": {

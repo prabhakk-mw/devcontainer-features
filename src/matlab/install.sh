@@ -25,6 +25,7 @@ INSTALLGPU="${INSTALLGPU:-"false"}"
 DESTINATION="${DESTINATION:-"/opt/matlab/${RELEASE^}"}"
 INSTALLMATLABPROXY="${INSTALLMATLABPROXY:-"false"}"
 INSTALLJUPYTERMATLABPROXY="${INSTALLJUPYTERMATLABPROXY:-"false"}"
+INSTALLJUPYTERLAB="${INSTALLJUPYTERLAB:-"false"}"
 INSTALLMATLABENGINEFORPYTHON="${INSTALLMATLABENGINEFORPYTHON:-"false"}"
 STARTINDESKTOP="${STARTINDESKTOP:-"false"}"
 NETWORKLICENSEMANAGER="${NETWORKLICENSEMANAGER:-" "}"
@@ -45,7 +46,8 @@ _CONTAINER_USER="${_CONTAINER_USER:-"undefined"}"
 
 _SCRIPT_LOCATION=$(dirname $(readlink -f "$0"))
 
-_PIP_INSTALL="python3 -m pip install --break-system-packages"
+_PIP_INSTALL="python3 -m pip install"
+export PIP_BREAK_SYSTEM_PACKAGES=1
 
 ### Variable Declaration End ###
 ### Helper Functions Begin ###
@@ -90,13 +92,18 @@ function install_matlab_proxy() {
 }
 
 function install_jupyter_matlab_proxy() {
-    $_PIP_INSTALL jupyter-matlab-proxy jupyterlab jupyter 
+    $_PIP_INSTALL jupyter-matlab-proxy
+}
+
+function install_jupyterlab() {
+    $_PIP_INSTALL jupyterlab jupyter
 }
 
 function install_matlab_engine_for_python() {
     # TODO: Skip installation if MATLAB Engine for Python does not support of Python version
     # See: https://mathworks.com/support/requirements/python-compatibility.html
     declare -A matlabengine_map
+    matlabengine_map['R2025b']="25.2"
     matlabengine_map['R2025a']="25.1"
     matlabengine_map['R2024b']="24.2"
     matlabengine_map['R2024a']="24.1"
@@ -173,6 +180,12 @@ fi
 if [ "${INSTALLJUPYTERMATLABPROXY}" == "true" ]; then
     echo "Installing jupyter-matlab-proxy"
     install_jupyter_matlab_proxy
+fi
+
+# Install jupyterlab if requested
+if [ "${INSTALLJUPYTERLAB}" == "true" ]; then
+    echo "Installing jupyterlab"
+    install_jupyterlab
 fi
 
 if [ "${STARTINDESKTOP}" == "true" ] || [ "${STARTINDESKTOP}" == "test" ]; then
@@ -303,4 +316,5 @@ fi
 popd
 ### Script Section End ###
 echo "MATLAB feature installation is complete."
+unset PIP_BREAK_SYSTEM_PACKAGES
 exit 0

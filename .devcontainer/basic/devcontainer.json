@@ -3,14 +3,16 @@
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "remoteUser": "vscode",
     // "image": "mathworks/matlab:r2025a",
+    // The problem with mathworks/matlab is matlab-proxy is already installed by pipx! What do we do here?
     // "containerUser": "matlab",
     "features": {
         "../matlab": {
             "release": "r2025a",
-            "skipMATLABInstall": true,
+            "skipMATLABInstall": false,
             "installMatlabProxy": true,
             "installJupyterMatlabProxy": true,
-            "installMatlabEngineForPython": true
+            "installMatlabEngineForPython": true,
+            "installJupyterLab": true
         }
     },
     // Configure VSCode Extensions
@@ -23,11 +25,11 @@
             ],
             "settings": {
                 "MATLAB.signIn": true,
-                "python.venvPath": "/opt/pipx/venvs/",
+                // "python.venvPath": "/opt/pipx/venvs/",
                 // Marks MATLAB Kernel as a trusted source
                 "jupyter.kernels.trusted": [
-                    // "/usr/share/jupyter/kernels/jupyter_matlab_kernel/kernel.json",
-                    "opt/pipx/venvs/matlab-proxy/share/jupyter/kernels/jupyter_matlab_kernel/kernel.json"
+                    "/usr/share/jupyter/kernels/jupyter_matlab_kernel/kernel.json",
+                    // "opt/pipx/venvs/matlab-proxy/share/jupyter/kernels/jupyter_matlab_kernel/kernel.json"
                 ]
             }
         }

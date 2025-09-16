@@ -8,6 +8,7 @@
         "release": {
             "type": "string",
             "proposals": [
+                "R2025b",
                 "R2025a",
                 "R2024b",
                 "R2024a",
@@ -57,6 +58,11 @@
         "installJupyterMatlabProxy": {
             "default": false,
             "description": "Installs jupyter-matlab-proxy and its dependencies (R2020b and later releases).",
+            "type": "boolean"
+        },
+        "installJupyterLab": {
+            "default": false,
+            "description": "Installs jupyterlab",
             "type": "boolean"
         },
         "installMatlabEngineForPython": {
