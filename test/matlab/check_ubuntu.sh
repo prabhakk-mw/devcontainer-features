@@ -1,35 +1,14 @@
 #!/bin/bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024 The MathWorks, Inc.
+# Copyright 2024-2025 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 #
 # This test file will be executed against one of the scenarios devcontainer.json test that
-# includes the 'matlab' feature with the R2025a release, and a support package installed.
+# includes the 'matlab' feature with the R2025b release, and a support package installed.
 # Support package installation is special, because these packages need to be installed into
 # the end users HOME folder and not into the root users folders. Installing into root will
 # result in users being unable to access the Support Packages.
 #
-# "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-# "features": {
-#     "ghcr.io/devcontainers/features/common-utils:2": {
-#         "installZsh": false,
-#         "installOhMyZshConfig": false,
-#         "username": "vscode",
-#         "userUid": "1000",
-#         "userGid": "1000",
-#         "upgradePackages": "true"
-#     },
-#     "ghcr.io/devcontainers/features/python": {
-#         "version": "3.9",
-#         "installTools": false
-#     },
-#     "matlab": {
-#         "release": "R2025a",
-#         "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
-#         "installMatlabEngineForPython": true
-#     }
-# },
-# "containerUser": "vscode"
 
 # This test can be run with the following command:
 #
@@ -50,16 +29,24 @@ source dev-container-features-test-lib
 # check <LABEL> <cmd> [args...]
 
 # Verify that the right release is installed in the expected location.
-check "R2025a is installed" bash -c "cat /opt/matlab/R2025a/VersionInfo.xml | grep '<release>R2025a</release>'"
+check "R2025b is installed" bash -c "cat /opt/matlab/R2025b/VersionInfo.xml | grep '<release>R2025b</release>'"
 
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
-check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2025a/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
+check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2025b/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
+
+check "is startInDesktop marker file present" bash -c "ls ~/.teststartmatlabdesktop"
+
+check "NLM information is saved in bashrc " bash -c "echo $MLM_LICENSE_FILE | grep 123@abc.com "
 
 check "python3 is installed " bash -c "python3 --version"
 
-# Verify that MATLAB engine for python is successfully installed
-check "MATLAB Engine for python is installed" bash -c "python3 -m pip list | grep -i 'matlabengine'"
+check "matlab-proxy has been installed"  bash -c "python3 -m pip list | grep matlab-proxy"
 
+check "matlab-proxy-app is callable" bash -c "matlab-proxy-app -v"
+
+check "jupyter lab is installed" bash -c "jupyter lab --version"
+
+check "MATLAB Engine for python is installed" bash -c "python3 -m pip list | grep -i 'matlabengine'"
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
 reportResults
