@@ -19,6 +19,7 @@
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,
+                "installJupyterlab": true,
                 "startInDesktop": "test",
                 "networkLicenseManager": "123@abc.com"
             }
@@ -41,6 +42,7 @@
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,
+                "installJupyterlab": true,
                 "startInDesktop": "test",
                 "networkLicenseManager": "123@abc.com"
             }
