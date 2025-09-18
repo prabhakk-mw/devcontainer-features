@@ -15,7 +15,7 @@
                 "installTools": false
             },
             "matlab": {
-                "release": "r2025b",
+                "release": "r2025a",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
                 "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,
