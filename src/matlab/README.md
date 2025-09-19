@@ -38,14 +38,3 @@ Installs MATLAB with supporting packages and tools.
 ---
 
 _Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/mathworks/devcontainer-features/blob/main/src/matlab/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
-
-
-## Things to Test:
-
-1. Works with the following images & python versions:
-
- - Ubuntu 22.04 / Python 3.10
- - Ubuntu 24.04 / Python 3.12
-
-2. What is the strategy for mathworks/matlab images which already have matlab-proxy installed?
-   The usecase could be that someone wants to install JMP and use with Jupyter ? 
