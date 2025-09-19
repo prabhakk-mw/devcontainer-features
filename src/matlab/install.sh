@@ -17,8 +17,8 @@ set -eu -o pipefail
 
 ## Set defaults to all the options in the feature.
 
-# R2025a is the latest available release.
-RELEASE="${RELEASE:-"R2025a"}"
+# R2025b is the latest available release.
+RELEASE="${RELEASE:-"R2025b"}"
 PRODUCTS="${PRODUCTS:-"MATLAB"}"
 DOC="${DOC:-"false"}"
 INSTALLGPU="${INSTALLGPU:-"false"}"
@@ -53,13 +53,25 @@ export PIP_BREAK_SYSTEM_PACKAGES=1
 ### Helper Functions Begin ###
 export DEBIAN_FRONTEND=noninteractive
 
-function updaterc() {
-    echo "Updating /etc/bash.bashrc and /etc/zsh/zshrc..."
-    if [[ "$(cat /etc/bash.bashrc)" != *"$1"* ]]; then
-        echo -e "$1" >>/etc/bash.bashrc
+updaterc() {
+    local _bashrc
+    local _zshrc
+    IS_DEBIAN_OR_RHEL=$(ihf_is_debian_or_rhel)
+    case $IS_DEBIAN_OR_RHEL in
+        debian) echo "Updating /etc/bash.bashrc and /etc/zsh/zshrc..."
+            _bashrc=/etc/bash.bashrc
+            _zshrc=/etc/zsh/zshrc
+            ;;
+        rhel) echo "Updating /etc/bashrc and /etc/zshrc..."
+            _bashrc=/etc/bashrc
+            _zshrc=/etc/zshrc
+        ;;
+    esac
+    if [[ "$(cat ${_bashrc})" != *"$1"* ]]; then
+        echo -e "$1" >> ${_bashrc}
     fi
-    if [ -f "/etc/zsh/zshrc" ] && [[ "$(cat /etc/zsh/zshrc)" != *"$1"* ]]; then
-        echo -e "$1" >>/etc/zsh/zshrc
+    if [ -f "${_zshrc}" ] && [[ "$(cat ${_zshrc})" != *"$1"* ]]; then
+        echo -e "$1" >> ${_zshrc}
     fi
 }
 
@@ -70,17 +82,24 @@ function install_xvfb() {
     fi
 }
 
+_INSTALL_PYTHON_AND_PIP_HAS_BEEN_INSTALLED=0
 function install_python_and_pip() {
-    if [ "$(ihf_is_debian_or_rhel)" == "rhel" ]; then
-        # uninstalling python3-requests package as it cannot be updated by subsequent install command.
-        ihf_remove_packages "python3-requests"
+    if [ "$_INSTALL_PYTHON_AND_PIP_HAS_BEEN_INSTALLED" -eq 0 ]; then 
+        if [ "$(ihf_is_debian_or_rhel)" == "rhel" ]; then
+            # uninstalling python3-requests package as it cannot be updated by subsequent install command.
+            ihf_remove_packages "python3-requests"
+        fi
+        ihf_install_packages "python3 python3-pip"
+        _INSTALL_PYTHON_AND_PIP_HAS_BEEN_INSTALLED=1
+    else
+        echo "Python and PIP have been installed."
     fi
-    ihf_install_packages "python3 python3-pip"
 }
 
 _MATLAB_PROXY_HAS_BEEN_INSTALLED=0
 function install_matlab_proxy() {
     if [ "$_MATLAB_PROXY_HAS_BEEN_INSTALLED" -eq 0 ]; then 
+        install_python_and_pip
         install_xvfb
 
         $_PIP_INSTALL matlab-proxy
@@ -92,14 +111,18 @@ function install_matlab_proxy() {
 }
 
 function install_jupyter_matlab_proxy() {
+    install_python_and_pip
     $_PIP_INSTALL jupyter-matlab-proxy
 }
 
 function install_jupyterlab() {
+    install_python_and_pip
     $_PIP_INSTALL jupyterlab jupyter
 }
 
 function install_matlab_engine_for_python() {
+    install_python_and_pip
+
     # TODO: Skip installation if MATLAB Engine for Python does not support of Python version
     # See: https://mathworks.com/support/requirements/python-compatibility.html
     declare -A matlabengine_map
@@ -168,8 +191,6 @@ fi
 MATLAB_FEATURE_INSTALL_TMPDIR=/tmp/matlab-feature-install
 mkdir -p $MATLAB_FEATURE_INSTALL_TMPDIR && pushd $MATLAB_FEATURE_INSTALL_TMPDIR
 
-install_python_and_pip
-
 # Install matlab-proxy if requested
 if [ "${INSTALLMATLABPROXY}" == "true" ]; then
     echo "Installing matlab-proxy"
@@ -221,6 +242,7 @@ fi
 
 # Update RC files with the provided license manager info
 if [ ! -z "${NETWORKLICENSEMANAGER}" -a "${NETWORKLICENSEMANAGER}" != " " ]; then
+    echo "Saving NLM info to bashrc and zshrc"
     updaterc "export MLM_LICENSE_FILE=${NETWORKLICENSEMANAGER}"
 fi
 

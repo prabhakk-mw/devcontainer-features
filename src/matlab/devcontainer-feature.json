@@ -23,7 +23,7 @@
                 "R2019b",
                 "R2019a"
             ],
-            "default": "R2025a",
+            "default": "R2025b",
             "description": "MATLAB Release to install."
         },
         "products": {
