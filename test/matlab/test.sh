@@ -56,7 +56,7 @@ source dev-container-features-test-lib
 # Feature-specific tests
 # The 'check' command comes from the dev-container-features-test-lib. Syntax is...
 # check <LABEL> <cmd> [args...]
-check "R2025a is installed" bash -c "cat /opt/matlab/R2025a/VersionInfo.xml | grep '<release>R2025a</release>'"
+check "R2025b is installed" bash -c "cat /opt/matlab/R2025b/VersionInfo.xml | grep '<release>R2025b</release>'"
 
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
