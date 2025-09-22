@@ -92,7 +92,7 @@ function install_python_and_pip() {
         ihf_install_packages "python3 python3-pip"
         _INSTALL_PYTHON_AND_PIP_HAS_BEEN_INSTALLED=1
     else
-        echo "Python and PIP have been installed."
+        echo "Python and PIP already installed."
     fi
 }
 
@@ -106,7 +106,7 @@ function install_matlab_proxy() {
 
         _MATLAB_PROXY_HAS_BEEN_INSTALLED=1
     else
-        echo "MATLAB Proxy has been installed."
+        echo "MATLAB Proxy already installed."
     fi
 }
 

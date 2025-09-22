@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024 The MathWorks, Inc.
+# Copyright 2024-2025 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 # Helpers functions to encapsulate OS specific installation
 
@@ -167,9 +167,11 @@ function ihf_is_debian_or_rhel() {
 function ihf_is_debian_13 {
     . /etc/os-release
     if [ "${ID}" = "debian" ] && [ "${VERSION_ID}" = "13" ]; then
-        echo "true"
+        # True
+        return 0
     else
-        echo "false"
+        # False
+        return 1
     fi
 }
 
