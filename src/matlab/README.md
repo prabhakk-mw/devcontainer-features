@@ -7,7 +7,7 @@ Installs MATLAB with supporting packages and tools.
 
 ```json
 "features": {
-    "ghcr.io/mathworks/devcontainer-features/matlab:0": {}
+    "ghcr.io/prabhakk-mw/devcontainer-features/matlab:0": {}
 }
 ```
 
@@ -15,13 +15,14 @@ Installs MATLAB with supporting packages and tools.
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| release | MATLAB Release to install. | string | R2024b |
+| release | MATLAB Release to install. | string | R2025b |
 | products | Products to install, specified as a list of space-separated product names.</br> For details of products, see [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md#product-installation-options). | string | MATLAB |
 | doc | Flag to install documentation and examples (R2022b and earlier releases). | boolean | false |
 | installGpu | Skips installation of GPU libraries when you install Parallel Computing Toolbox (R2023a and later releases). | boolean | false |
 | destination | Full path to the installation destination folder. Default: /opt/matlab/${RELEASE^} | string | - |
 | installMatlabProxy | Installs matlab-proxy and its dependencies (R2020b and later releases). | boolean | false |
 | installJupyterMatlabProxy | Installs jupyter-matlab-proxy and its dependencies (R2020b and later releases). | boolean | false |
+| installJupyterLab | Installs jupyterlab | boolean | false |
 | installMatlabEngineForPython | Installs the MATLAB Engine for Python if the destination option is set correctly. | boolean | false |
 | startInDesktop | Starts matlab-proxy when container starts. | string | false |
 | networkLicenseManager | MATLAB will use the specified Network License Manager. | string | - |
@@ -37,4 +38,4 @@ Installs MATLAB with supporting packages and tools.
 
 ---
 
-_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/mathworks/devcontainer-features/blob/main/src/matlab/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
+_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/prabhakk-mw/devcontainer-features/blob/main/src/matlab/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
