@@ -1,13 +1,5 @@
 {
-    "install_release_on_ubuntu":{
-        "image": "ubuntu:22.04",
-        "features":{
-            "matlab":{
-                "release" : "r2022b"
-            }
-        }
-    },
-    "install_support_packages_as_container_user": {
+    "check_ubuntu": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {
             "ghcr.io/devcontainers/features/common-utils:2": {
@@ -23,44 +15,16 @@
                 "installTools": false
             },
             "matlab": {
-                "release": "r2022b",
+                "release": "r2025b",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
-                "installMatlabEngineForPython": true
-            }
-        },
-        "containerUser": "vscode"
-    },
-    "install_jupyter_matlab_proxy": {
-        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-        "features": {
-            "matlab": {
+                "installMatlabEngineForPython": true,
                 "installJupyterMatlabProxy": true,
-                "skipMATLABInstall": true
-            }
-        }
-    },
-    "start_in_matlab_proxy_desktop": {
-        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-        "features": {
-            "matlab": {
+                "installJupyterlab": true,
                 "startInDesktop": "test",
-                "networkLicenseManager": "123@abc.com",
-                "skipMATLABInstall": true
+                "networkLicenseManager": "123@abc.com"
             }
         },
         "containerUser": "vscode"
-    },
-    "install_matlab_engine_for_python": {
-        "image": "mathworks/matlab:r2024a",
-        "features": {
-            "matlab": {
-                "release": "r2024a",
-                "destination": "/opt/matlab/R2024a",
-                "skipMATLABInstall": true,
-                "installMatlabEngineForPython": true
-            }
-        },
-        "containerUser": "matlab"
     },
     "check_ubi9": {
         "image": "registry.access.redhat.com/ubi9/ubi:latest",
@@ -76,8 +40,11 @@
             "matlab": {
                 "release": "r2024a",
                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
+                "installMatlabEngineForPython": true,
+                "installJupyterMatlabProxy": true,
+                "installJupyterlab": true,
                 "startInDesktop": "test",
-                "installJupyterMatlabProxy": true
+                "networkLicenseManager": "123@abc.com"
             }
         },
         "containerUser": "vscode"

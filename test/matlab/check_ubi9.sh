@@ -1,6 +1,6 @@
 #!/bin/bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024 The MathWorks, Inc.
+# Copyright 2024-2025 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 #
 # This test file will be executed against one of the scenarios devcontainer.json test that
@@ -9,32 +9,13 @@
 # the end users HOME folder and not into the root users folders. Installing into root will
 # result in users being unable to access the Support Packages.
 #
-# "check_ubi9": {
-#         "image": "registry.access.redhat.com/ubi9/ubi:latest",
-#         "features": {
-#             "ghcr.io/devcontainers/features/common-utils:2": {
-#                 "installZsh": false,
-#                 "installOhMyZshConfig": false,
-#                 "username": "vscode",
-#                 "userUid": "1000",
-#                 "userGid": "1000",
-#                 "upgradePackages": "true"
-#             },
-#             "matlab": {
-#                 "release": "R2024a",
-#                 "products": "MATLAB MATLAB_Support_Package_for_Android_Sensors",
-#                 "startInDesktop": "test"
-#             }
-#         },
-#         "containerUser": "vscode"
-#     }
 
 # This test can be run with the following command:
 #
 #    devcontainer features test \
 #                   --features matlab   \
 #                   --remote-user root \
-#                   --base-image mcr.microsoft.com/devcontainers/base:ubuntu \
+#                   --base-image registry.access.redhat.com/ubi9/ubi:latest \
 #                   `pwd`
 # OR:
 # devcontainer features test -p `pwd` -f matlab --filter check_ubi9  --log-level debug
@@ -55,17 +36,19 @@ check "R2024a is installed" bash -c "cat /opt/matlab/R2024a/VersionInfo.xml | gr
 # Verify MATLAB_Support_Package_for_Android_Sensors is installed at the right place (ie: The home folder for the containerUser : vscode )
 check "support package is installed" bash -c "cat /home/vscode/Documents/MATLAB/SupportPackages/R2024a/ssiSearchFolders | head -1 | grep 'toolbox/matlab/hardware/shared/hwsdk'"
 
+check "is startInDesktop marker file present" bash -c "ls ~/.teststartmatlabdesktop"
 
-check "python3 is installed" python3 --version
+check "NLM information is saved in bashrc " bash -c "echo $MLM_LICENSE_FILE | grep 123@abc.com "
+
+check "python3 is installed " bash -c "python3 --version"
 
 check "matlab-proxy has been installed"  bash -c "python3 -m pip list | grep matlab-proxy"
 
-check "matlab-proxy-app is callable" bash -c "matlab-proxy-app -h"
+check "matlab-proxy-app is callable" bash -c "matlab-proxy-app -v"
 
-check "is startInDesktop marker file present" bash -c "ls ~/.teststartmatlabdesktop"
+check "jupyter lab is installed" bash -c "jupyter lab --version"
 
-check "jupyter-lab is installed" bash -c "jupyter-lab --version"
-
+check "MATLAB Engine for python is installed" bash -c "python3 -m pip list | grep -i 'matlabengine'"
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
 reportResults

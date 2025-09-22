@@ -2,7 +2,7 @@
 # This script install the OS dependencies required by MATLAB for the release specified in the
 # environment variable MATLAB_RELEASE on any linux OS that is dervied from Ubuntu or RHEL
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024 The MathWorks, Inc.
+# Copyright 2024-2025 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 
 set -eu -o pipefail
@@ -43,6 +43,10 @@ function get_base_dependencies_list() {
     local BASE_DEPS_URL=https://raw.githubusercontent.com/mathworks-ref-arch/container-images/main/matlab-deps/${MATLAB_RELEASE,}/${MATLAB_DEPS_OS_VERSION}/base-dependencies.txt
     # Get matlab_deps - if this fails, then we aren't on a supported os
     local PKGS=$(wget -qO- ${BASE_DEPS_URL})
+    # if Debian 13, then remove packages which have dpdk in their name
+    if ihf_is_debian_13; then
+        PKGS=$(echo $PKGS | tr ' ' '\n' | grep -v 'dpdk' | tr '\n' ' ')
+    fi
     if [ -z "$PKGS" ]; then
         ihf_print_and_exit "${MATLAB_DEPS_OS_VERSION} is not a supported OS for MATLAB ${MATLAB_RELEASE} ."
     fi
@@ -51,7 +55,6 @@ function get_base_dependencies_list() {
 
 function install_matlab_deps() {
     local MATLAB_DEPS_OS_VERSION=$(ihf_get_matlab_deps_os)
-    # local linux_distro=$(ihf_is_debian_or_rhel)
     
     print_os_info
     

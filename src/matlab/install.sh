@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024 The MathWorks, Inc.
+# Copyright 2024-2025 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 # NOTE: The 'install.sh' entrypoint script is always executed as the root user.
 
@@ -17,14 +17,15 @@ set -eu -o pipefail
 
 ## Set defaults to all the options in the feature.
 
-# R2024b is the latest available release.
-RELEASE="${RELEASE:-"R2024b"}"
+# R2025b is the latest available release.
+RELEASE="${RELEASE:-"R2025b"}"
 PRODUCTS="${PRODUCTS:-"MATLAB"}"
 DOC="${DOC:-"false"}"
 INSTALLGPU="${INSTALLGPU:-"false"}"
 DESTINATION="${DESTINATION:-"/opt/matlab/${RELEASE^}"}"
 INSTALLMATLABPROXY="${INSTALLMATLABPROXY:-"false"}"
 INSTALLJUPYTERMATLABPROXY="${INSTALLJUPYTERMATLABPROXY:-"false"}"
+INSTALLJUPYTERLAB="${INSTALLJUPYTERLAB:-"false"}"
 INSTALLMATLABENGINEFORPYTHON="${INSTALLMATLABENGINEFORPYTHON:-"false"}"
 STARTINDESKTOP="${STARTINDESKTOP:-"false"}"
 NETWORKLICENSEMANAGER="${NETWORKLICENSEMANAGER:-" "}"
@@ -45,28 +46,33 @@ _CONTAINER_USER="${_CONTAINER_USER:-"undefined"}"
 
 _SCRIPT_LOCATION=$(dirname $(readlink -f "$0"))
 
+_PIP_INSTALL="python3 -m pip install"
+export PIP_BREAK_SYSTEM_PACKAGES=1
+
 ### Variable Declaration End ###
 ### Helper Functions Begin ###
 export DEBIAN_FRONTEND=noninteractive
 
-function updaterc() {
-    echo "Updating /etc/bash.bashrc and /etc/zsh/zshrc..."
-    if [[ "$(cat /etc/bash.bashrc)" != *"$1"* ]]; then
-        echo -e "$1" >>/etc/bash.bashrc
+updaterc() {
+    local _bashrc
+    local _zshrc
+    IS_DEBIAN_OR_RHEL=$(ihf_is_debian_or_rhel)
+    case $IS_DEBIAN_OR_RHEL in
+        debian) echo "Updating /etc/bash.bashrc and /etc/zsh/zshrc..."
+            _bashrc=/etc/bash.bashrc
+            _zshrc=/etc/zsh/zshrc
+            ;;
+        rhel) echo "Updating /etc/bashrc and /etc/zshrc..."
+            _bashrc=/etc/bashrc
+            _zshrc=/etc/zshrc
+        ;;
+    esac
+    if [[ "$(cat ${_bashrc})" != *"$1"* ]]; then
+        echo -e "$1" >> ${_bashrc}
     fi
-    if [ -f "/etc/zsh/zshrc" ] && [[ "$(cat /etc/zsh/zshrc)" != *"$1"* ]]; then
-        echo -e "$1" >>/etc/zsh/zshrc
+    if [ -f "${_zshrc}" ] && [[ "$(cat ${_zshrc})" != *"$1"* ]]; then
+        echo -e "$1" >> ${_zshrc}
     fi
-}
-
-function install_python_and_pip() {
-    if [ "$(ihf_is_debian_or_rhel)" == "rhel" ]; then
-        # uninstalling python3-requests package as it cannot be updated by subsequent install command.
-        ihf_remove_packages "python3-requests"
-    fi
-    ihf_install_packages "python3 python3-pip" && \
-    python3 -m pip install --upgrade pip
-    
 }
 
 function install_xvfb() {
@@ -76,22 +82,52 @@ function install_xvfb() {
     fi
 }
 
+_INSTALL_PYTHON_AND_PIP_HAS_BEEN_INSTALLED=0
+function install_python_and_pip() {
+    if [ "$_INSTALL_PYTHON_AND_PIP_HAS_BEEN_INSTALLED" -eq 0 ]; then 
+        if [ "$(ihf_is_debian_or_rhel)" == "rhel" ]; then
+            # uninstalling python3-requests package as it cannot be updated by subsequent install command.
+            ihf_remove_packages "python3-requests"
+        fi
+        ihf_install_packages "python3 python3-pip"
+        _INSTALL_PYTHON_AND_PIP_HAS_BEEN_INSTALLED=1
+    else
+        echo "Python and PIP already installed."
+    fi
+}
+
+_MATLAB_PROXY_HAS_BEEN_INSTALLED=0
 function install_matlab_proxy() {
-    install_python_and_pip &&
-    install_xvfb &&
-    python3 -m pip install --upgrade matlab-proxy
+    if [ "$_MATLAB_PROXY_HAS_BEEN_INSTALLED" -eq 0 ]; then 
+        install_python_and_pip
+        install_xvfb
+
+        $_PIP_INSTALL matlab-proxy
+
+        _MATLAB_PROXY_HAS_BEEN_INSTALLED=1
+    else
+        echo "MATLAB Proxy already installed."
+    fi
 }
 
 function install_jupyter_matlab_proxy() {
-    install_python_and_pip &&
-    install_xvfb &&
-    python3 -m pip install --upgrade jupyter-matlab-proxy matlab-proxy jupyterlab jupyterlab-git
+    install_python_and_pip
+    $_PIP_INSTALL jupyter-matlab-proxy
+}
+
+function install_jupyterlab() {
+    install_python_and_pip
+    $_PIP_INSTALL jupyterlab jupyter
 }
 
 function install_matlab_engine_for_python() {
-    # Installing the engine is tricky
-    # The installation can fail if the python version does not match the supported release
+    install_python_and_pip
+
+    # TODO: Skip installation if MATLAB Engine for Python does not support of Python version
+    # See: https://mathworks.com/support/requirements/python-compatibility.html
     declare -A matlabengine_map
+    matlabengine_map['R2025b']="25.2"
+    matlabengine_map['R2025a']="25.1"
     matlabengine_map['R2024b']="24.2"
     matlabengine_map['R2024a']="24.1"
     matlabengine_map['R2023b']="23.2"
@@ -102,12 +138,10 @@ function install_matlab_engine_for_python() {
     matlabengine_map['R2021a']="9.10"
     matlabengine_map['R2020b']="9.9"
     
-    install_python_and_pip &&
     
-    echo "Setting LD_LIBRARY_PATH=${_LD_LIBRARY_PATH}"
-
     env LD_LIBRARY_PATH=${_LD_LIBRARY_PATH} \
-    python3 -m pip install matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
+    $_PIP_INSTALL matlabengine==${matlabengine_map[$MATLAB_RELEASE]}.*
+    echo "Setting LD_LIBRARY_PATH=${_LD_LIBRARY_PATH}"
 }
 
 # Create a home folder for non-root, undefined CONTAINER_USER, if not already available
@@ -169,6 +203,12 @@ if [ "${INSTALLJUPYTERMATLABPROXY}" == "true" ]; then
     install_jupyter_matlab_proxy
 fi
 
+# Install jupyterlab if requested
+if [ "${INSTALLJUPYTERLAB}" == "true" ]; then
+    echo "Installing jupyterlab"
+    install_jupyterlab
+fi
+
 if [ "${STARTINDESKTOP}" == "true" ] || [ "${STARTINDESKTOP}" == "test" ]; then
     echo "User wants to start in MATLAB Desktop."
     # Leave a marker file that can be checked by the postStartCommand
@@ -202,6 +242,7 @@ fi
 
 # Update RC files with the provided license manager info
 if [ ! -z "${NETWORKLICENSEMANAGER}" -a "${NETWORKLICENSEMANAGER}" != " " ]; then
+    echo "Saving NLM info to bashrc and zshrc"
     updaterc "export MLM_LICENSE_FILE=${NETWORKLICENSEMANAGER}"
 fi
 
@@ -225,7 +266,7 @@ if [ "$SKIPMATLABINSTALL" != 'true' ]; then
     
     # Handle GPU installation
     if [ "${INSTALLGPU}" == "false" ]; then
-        RELEASES_THAT_SUPPORT_NOGPU=("R2024b" "R2024a" "R2023b" "R2023a")
+        RELEASES_THAT_SUPPORT_NOGPU=("R2025a" "R2024b" "R2024a" "R2023b" "R2023a")
         # The value variable is assigned a regex that matches the exact value
         value="\<${MATLAB_RELEASE}\>"
         if [[ ${RELEASES_THAT_SUPPORT_NOGPU[@]} =~ $value ]]; then
@@ -297,4 +338,5 @@ fi
 popd
 ### Script Section End ###
 echo "MATLAB feature installation is complete."
+unset PIP_BREAK_SYSTEM_PACKAGES
 exit 0

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------------------
-# Copyright 2024 The MathWorks, Inc.
+# Copyright 2024-2025 The MathWorks, Inc.
 #-------------------------------------------------------------------------------------------------------------
 # Helpers functions to encapsulate OS specific installation
 
@@ -34,12 +34,11 @@ function ihf_get_matlab_deps_os() {
     case ${LINUX_DISTRO} in
         debian)
             if [[ "${ID}" == "ubuntu" ]]; then
-                local SUPPORTED_VERSION_CODENAME="focal jammy"
                 MATLAB_DEPS_OS_VERSION=${ID}${VERSION_ID}
-                elif [[ "${ID}" == "debian" ]]; then
-                local SUPPORTED_VERSION_CODENAME="bullseye bookworm"
+            elif [[ "${ID}" == "debian" ]]; then
                 local UBUNTU_VERSION_ID=${VERSION_ID/11/20.04}
                 UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/12/22.04}
+                UBUNTU_VERSION_ID=${UBUNTU_VERSION_ID/13/24.04}
                 MATLAB_DEPS_OS_VERSION=ubuntu${UBUNTU_VERSION_ID}
             fi
         ;;
@@ -136,7 +135,7 @@ function ihf_get_remove_cmd() {
 # returns "true/false" string if MATLAB_RELEASE is valid
 function ihf_is_valid_matlab_release() {
     # List of supported MATLAB_RELEASE values
-    local _SUPPORTED_MATLAB_RELEASES=("R2024b" "R2024a" "R2023b" "R2023a" "R2022b" "R2022a" "R2021b" "R2021a" "R2020b" "R2020a" "R2019b" "R2019a")
+    local _SUPPORTED_MATLAB_RELEASES=("R2025b" "R2025a" "R2024b" "R2024a" "R2023b" "R2023a" "R2022b" "R2022a" "R2021b" "R2021a" "R2020b" "R2020a" "R2019b" "R2019a")
     
     ## Validate MATLAB_RELEASE
     if [ -z "$MATLAB_RELEASE" ]; then
@@ -161,6 +160,18 @@ function ihf_is_debian_or_rhel() {
         echo "rhel"
     else
         ihf_print_and_exit "Linux distro ${ID} not supported."
+    fi
+}
+
+
+function ihf_is_debian_13 {
+    . /etc/os-release
+    if [ "${ID}" = "debian" ] && [ "${VERSION_ID}" = "13" ]; then
+        # True
+        return 0
+    else
+        # False
+        return 1
     fi
 }
 
