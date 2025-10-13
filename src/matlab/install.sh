@@ -30,6 +30,7 @@ INSTALLMATLABENGINEFORPYTHON="${INSTALLMATLABENGINEFORPYTHON:-"false"}"
 STARTINDESKTOP="${STARTINDESKTOP:-"false"}"
 NETWORKLICENSEMANAGER="${NETWORKLICENSEMANAGER:-" "}"
 SKIPMATLABINSTALL="${SKIPMATLABINSTALL:-"false"}"
+ENABLETELEMETRY="${ENABLETELEMETRY:-"true"}"
 
 MATLAB_RELEASE="${RELEASE^}"
 MATLAB_PRODUCT_LIST="${PRODUCTS}"
@@ -333,6 +334,17 @@ fi
 if [ "${INSTALLMATLABENGINEFORPYTHON}" == "true" ]; then
     echo "Installing matlabengine"
     install_matlab_engine_for_python
+fi
+
+if [ "$ENABLETELEMETRY" == 'true' ]; then
+    # The following environment variables allow MathWorks to understand how this MathWorks
+    # product (MATLAB Feature for Development Containers) is being used. 
+    # This information helps us make MATLAB even better.
+    # Your content, and information about the content within your files, is not shared with MathWorks.
+    # To opt out of this service, delete the environment variables defined in the following line.
+    # To learn more, see the Help Make MATLAB Even Better FAQ:
+    # https://mathworks.com/support/faq/user_experience_information_faq.html
+    updaterc "export MW_DDUX_FORCE_ENABLE=true && export MW_CONTEXT_TAGS=MATLAB:DEVCONTAINER_FEATURE:V1"
 fi
 
 popd
