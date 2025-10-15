@@ -48,7 +48,7 @@ check "jupyter lab is installed" bash -c "jupyter lab --version"
 
 check "MATLAB Engine for python is installed" bash -c "python3 -m pip list | grep -i 'matlabengine'"
 
-check "MathWorks Telemetry is enabled in bashrc " bash -c "echo $MW_CONTEXT_TAGS | grep DEVCONTAINER_FEATURE "
+check "MathWorks Telemetry is enabled in bashrc " bash -c 'echo $MW_CONTEXT_TAGS | grep DEVCONTAINER_FEATURE '
 # Report results
 # If any of the checks above exited with a non-zero exit code, the test will fail.
 reportResults
