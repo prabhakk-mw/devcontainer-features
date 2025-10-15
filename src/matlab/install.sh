@@ -340,7 +340,7 @@ if [ "$ENABLETELEMETRY" == 'true' ]; then
     echo "Enabling Telemetry"
     # To learn more, see the Help Make MATLAB Even Better FAQ:
     # https://mathworks.com/support/faq/user_experience_information_faq.html
-    updaterc "export MW_DDUX_FORCE_ENABLE=true && export MW_CONTEXT_TAGS=MATLAB:DEVCONTAINER_FEATURE:V1"
+    updaterc 'export MW_DDUX_FORCE_ENABLE=true && export MW_CONTEXT_TAGS="${MW_CONTEXT_TAGS}";MATLAB:DEVCONTAINER_FEATURE:V1'
 fi
 
 popd

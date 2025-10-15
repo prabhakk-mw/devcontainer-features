@@ -1,7 +1,7 @@
 {
     "name": "MATLAB",
     "id": "matlab",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "Installs MATLAB with supporting packages and tools.",
     "documentationURL": "https://github.com/mathworks/devcontainer-features",
     "options": {
